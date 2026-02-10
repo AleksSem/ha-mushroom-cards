@@ -13,7 +13,6 @@ A card for controlling Xiaomi air purifiers with support for:
 - Favorite level slider (0–14)
 - PM2.5, temperature, humidity, motor speed stats
 - PM2.5 color coding based on AQI level
-- AQI badge in card header with color and tooltip
 - Filter life progress bar with color coding
 - Settings: child lock, LED, buzzer
 - Compact view mode
@@ -54,7 +53,6 @@ show_settings: true
 show_filter_info: true
 compact_view: false
 icon_animation: true
-show_aqi_badge: true
 ```
 
 ### Options
@@ -71,7 +69,6 @@ show_aqi_badge: true
 | `show_filter_info` | boolean | `true` | Show filter life progress bar |
 | `compact_view` | boolean | `false` | Compact card layout |
 | `icon_animation` | boolean | `true` | Animate icon when active |
-| `show_aqi_badge` | boolean | `true` | Show PM2.5 AQI badge in card header |
 
 ### Entity Overrides
 
@@ -94,7 +91,7 @@ buzzer_entity: switch.air_purifier_buzzer
 
 ### AQI Color Coding
 
-The PM2.5 badge and stats row use color coding based on air quality:
+The PM2.5 stats row uses color coding based on air quality:
 
 | PM2.5 | Level | Color |
 |---|---|---|

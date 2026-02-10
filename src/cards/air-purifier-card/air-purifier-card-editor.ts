@@ -20,7 +20,6 @@ const MAIN_SCHEMA = [
       { name: 'show_filter_info', selector: { boolean: {} } },
       { name: 'compact_view', selector: { boolean: {} } },
       { name: 'icon_animation', selector: { boolean: {} } },
-      { name: 'show_aqi_badge', selector: { boolean: {} } },
     ],
   },
 ];
@@ -90,7 +89,6 @@ export class AirPurifierCardEditor extends LitElement {
       show_filter_info: true,
       compact_view: false,
       icon_animation: true,
-      show_aqi_badge: true,
       ...this._config,
     };
 
@@ -144,6 +142,10 @@ export class AirPurifierCardEditor extends LitElement {
     }
     .overrides-toggle ha-icon {
       --mdc-icon-size: 20px;
+    }
+    ha-selector-boolean {
+      display: flex;
+      justify-content: flex-start;
     }
   `;
 }

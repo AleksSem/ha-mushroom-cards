@@ -7,20 +7,6 @@ export const airPurifierCardStyles = css`
     align-items: center;
     gap: 12px;
   }
-  .aqi-badge {
-    min-width: 36px;
-    height: 24px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 600;
-    color: #fff;
-    padding: 0 8px;
-    flex-shrink: 0;
-  }
-
   /* Stats grid */
   .stats-grid {
     display: grid;

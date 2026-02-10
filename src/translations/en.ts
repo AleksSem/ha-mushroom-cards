@@ -30,7 +30,6 @@ const en: Record<string, string> = {
   'editor.show_filter_info': 'Show Filter Info',
   'editor.compact_view': 'Compact View',
   'editor.icon_animation': 'Icon Animation',
-  'editor.show_aqi_badge': 'Show AQI Badge',
   'editor.entity_overrides': 'Entity Overrides',
   'editor.pm25_entity': 'PM2.5 Entity',
   'editor.temperature_entity': 'Temperature Entity',

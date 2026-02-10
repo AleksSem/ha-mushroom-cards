@@ -2,7 +2,6 @@ import { LitElement, html, nothing, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { HomeAssistant, HassEntity } from '../../types';
 import { localize } from '../../localize';
-import { getAqiColor, getAqiLevel } from '../../utils/colors';
 import { cardStyles } from '../../shared/styles/card-styles';
 import { AirPurifierCardConfig } from './types';
 import { CARD_TAG, EDITOR_TAG, CARD_NAME, CARD_DESCRIPTION } from './const';
@@ -13,7 +12,6 @@ import {
   getPresetModes,
   getActivePreset,
   isEntityOn,
-  getEntityNumericState,
 } from './utils';
 import { registerCard } from '../../utils/register-card';
 import { renderPowerControl } from './controls/power-control';
@@ -72,7 +70,6 @@ export class AirPurifierCard extends LitElement {
       show_filter_info: true,
       compact_view: false,
       icon_animation: true,
-      show_aqi_badge: true,
       ...config,
     };
   }
@@ -129,7 +126,6 @@ export class AirPurifierCard extends LitElement {
     const name = this._config.name || entity.attributes.friendly_name || 'Air Purifier';
     const presets = getPresetModes(entity);
     const activePreset = getActivePreset(entity);
-    const pm25 = getEntityNumericState(this.hass, resolved.pm25);
     const isFavorite = activePreset?.toLowerCase() === 'favorite';
     const lang = this._lang;
     const compact = this._config.compact_view;
@@ -137,7 +133,7 @@ export class AirPurifierCard extends LitElement {
     return html`
       <ha-card>
         <div class="container">
-          ${this._renderHeader(entity, active, name, pm25, lang)}
+          ${this._renderHeader(entity, active, name, lang)}
           ${!compact && this._config.show_stats
             ? renderStatsRow(this.hass, resolved, lang)
             : nothing}
@@ -162,7 +158,6 @@ export class AirPurifierCard extends LitElement {
     entity: HassEntity,
     active: boolean,
     name: string,
-    pm25: number | undefined,
     lang: string,
   ) {
     const stateStr = active
@@ -181,15 +176,6 @@ export class AirPurifierCard extends LitElement {
               .primary=${this._config.show_name !== false ? name : ''}
               .secondary=${this._config.show_state !== false ? secondary : ''}
             ></hac-state-info>
-          `
-          : nothing}
-        ${this._config.show_aqi_badge !== false && pm25 !== undefined
-          ? html`
-            <div
-              class="aqi-badge"
-              style="background: ${getAqiColor(pm25)}"
-              title=${localize(`aqi.${getAqiLevel(pm25)}`, lang)}
-            >${Math.round(pm25)}</div>
           `
           : nothing}
       </div>

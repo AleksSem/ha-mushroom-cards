@@ -11,7 +11,6 @@ export interface AirPurifierCardConfig extends LovelaceCardConfig {
   show_filter_info?: boolean;
   compact_view?: boolean;
   icon_animation?: boolean;
-  show_aqi_badge?: boolean;
   // Entity overrides
   pm25_entity?: string;
   temperature_entity?: string;
