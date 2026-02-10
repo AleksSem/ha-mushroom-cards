@@ -41,6 +41,14 @@ const ru: Record<string, string> = {
   'editor.child_lock_entity': 'Детский замок',
   'editor.led_entity': 'LED индикатор',
   'editor.buzzer_entity': 'Звуковой сигнал',
+  // Light Card
+  'light.card.name': 'Свет',
+  'light.card.description': 'Карточка для управления светом',
+  'editor.show_brightness_control': 'Яркость',
+  'editor.show_color_temp_control': 'Цвет. температура',
+  'editor.show_color_control': 'Цвет',
+  'editor.use_light_color': 'Цвет лампы',
+  'editor.hide_controls_when_off': 'Скрывать управление при выключении',
 };
 
 export default ru;

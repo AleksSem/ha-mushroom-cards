@@ -41,6 +41,14 @@ const en: Record<string, string> = {
   'editor.child_lock_entity': 'Child Lock Entity',
   'editor.led_entity': 'LED Entity',
   'editor.buzzer_entity': 'Buzzer Entity',
+  // Light Card
+  'light.card.name': 'Light',
+  'light.card.description': 'Card for light entities',
+  'editor.show_brightness_control': 'Brightness Control',
+  'editor.show_color_temp_control': 'Color Temp Control',
+  'editor.show_color_control': 'Color Control',
+  'editor.use_light_color': 'Use Light Color',
+  'editor.hide_controls_when_off': 'Hide controls when off',
 };
 
 export default en;

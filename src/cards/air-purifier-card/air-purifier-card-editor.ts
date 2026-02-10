@@ -122,6 +122,7 @@ export class AirPurifierCardEditor extends LitElement {
   static styles = css`
     :host {
       display: block;
+      --ha-space-6: 4px;
     }
     .overrides-section {
       margin-top: 16px;
@@ -146,6 +147,9 @@ export class AirPurifierCardEditor extends LitElement {
     ha-selector-boolean {
       display: flex;
       justify-content: flex-start;
+    }
+    ha-formfield {
+      min-height: 20px;
     }
   `;
 }

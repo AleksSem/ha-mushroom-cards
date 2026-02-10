@@ -6,12 +6,13 @@ export class ShapeIcon extends LitElement {
   @property() icon = 'mdi:air-purifier';
   @property({ type: Boolean }) active = false;
   @property({ type: Boolean }) animated = true;
+  @property() animation: 'spin' | 'pulse' | 'none' = 'spin';
 
   render() {
-    const iconClass = this.active && this.animated ? 'spin' : '';
+    const animClass = this.active && this.animated ? this.animation : '';
     return html`
       <div class="shape ${this.active ? 'active' : ''}">
-        <ha-icon .icon=${this.icon} class=${iconClass}></ha-icon>
+        <ha-icon .icon=${this.icon} class=${animClass}></ha-icon>
       </div>
     `;
   }
@@ -33,7 +34,7 @@ export class ShapeIcon extends LitElement {
       transition: background 0.3s ease;
     }
     .shape.active {
-      background: var(--state-fan-active-color, var(--primary-color));
+      background: var(--hac-shape-active-bg, var(--state-fan-active-color, var(--primary-color)));
     }
     .shape.active ha-icon {
       color: var(--text-primary-color, #fff);
@@ -45,9 +46,16 @@ export class ShapeIcon extends LitElement {
     .spin {
       animation: spin 1.5s linear infinite;
     }
+    .pulse {
+      animation: pulse 2s ease-in-out infinite;
+    }
     @keyframes spin {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
     }
   `;
 }

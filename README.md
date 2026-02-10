@@ -20,6 +20,18 @@ A card for controlling Xiaomi air purifiers with support for:
 - Entity auto-discovery with manual override support
 - Multi-language support (English, Russian)
 
+### Light Card
+
+A card for controlling smart lights with support for:
+
+- Power on/off with light color tinting
+- Brightness slider (1–100%)
+- Color temperature gradient slider (Kelvin)
+- Color/hue gradient slider (0–360°)
+- Icon animation (pulse)
+- Compact view mode
+- Multi-language support (English, Russian)
+
 ## Installation
 
 ### HACS (Recommended)
@@ -39,7 +51,7 @@ A card for controlling Xiaomi air purifiers with support for:
 
 ## Configuration
 
-Add the card to your Lovelace dashboard:
+### Air Purifier Card
 
 ```yaml
 type: custom:air-purifier-card
@@ -55,7 +67,7 @@ compact_view: false
 icon_animation: true
 ```
 
-### Options
+#### Options
 
 | Option | Type | Default | Description |
 |---|---|---|---|
@@ -69,6 +81,37 @@ icon_animation: true
 | `show_filter_info` | boolean | `true` | Show filter life progress bar |
 | `compact_view` | boolean | `false` | Compact card layout |
 | `icon_animation` | boolean | `true` | Animate icon when active |
+
+### Light Card
+
+```yaml
+type: custom:light-card
+entity: light.living_room
+name: Living Room Light
+show_name: true
+show_state: true
+show_brightness_control: true
+show_color_temp_control: true
+show_color_control: true
+use_light_color: true
+icon_animation: true
+compact_view: false
+```
+
+#### Options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `entity` | string | **Required** | Light entity ID |
+| `name` | string | Entity name | Card title |
+| `show_name` | boolean | `true` | Show card name |
+| `show_state` | boolean | `true` | Show current state |
+| `show_brightness_control` | boolean | `true` | Show brightness slider (1–100%) |
+| `show_color_temp_control` | boolean | `true` | Show color temperature gradient slider |
+| `show_color_control` | boolean | `true` | Show color/hue gradient slider |
+| `use_light_color` | boolean | `true` | Tint icon with the light's current color |
+| `icon_animation` | boolean | `true` | Pulse animation when light is on |
+| `compact_view` | boolean | `false` | Compact card layout |
 
 ### Entity Overrides
 
@@ -116,16 +159,25 @@ The build output goes to `custom_components/ha_mushroom_cards/ha-mushroom-cards.
 
 ```
 src/
-├── cards/air-purifier-card/
-│   ├── controls/          # UI controls (power, preset, stats, filter, settings, favorite level)
-│   ├── air-purifier-card.ts
-│   ├── air-purifier-card-editor.ts
-│   ├── const.ts
-│   ├── styles.ts
-│   ├── types.ts
-│   └── utils.ts
+├── cards/
+│   ├── air-purifier-card/
+│   │   ├── controls/      # UI controls (power, preset, stats, filter, settings, favorite level)
+│   │   ├── air-purifier-card.ts
+│   │   ├── air-purifier-card-editor.ts
+│   │   ├── const.ts
+│   │   ├── styles.ts
+│   │   ├── types.ts
+│   │   └── utils.ts
+│   └── light-card/
+│       ├── controls/      # UI controls (power, brightness, color temp, color)
+│       ├── light-card.ts
+│       ├── light-card-editor.ts
+│       ├── const.ts
+│       ├── styles.ts
+│       ├── types.ts
+│       └── utils.ts
 ├── shared/
-│   ├── components/        # Reusable UI components (progress-bar, shape-icon, slider, etc.)
+│   ├── components/        # Reusable UI components (progress-bar, shape-icon, slider, gradient-slider, etc.)
 │   └── styles/            # Shared animations and card styles
 ├── translations/          # i18n (en, ru)
 ├── utils/                 # Helpers (colors, entity resolution, HA integration)

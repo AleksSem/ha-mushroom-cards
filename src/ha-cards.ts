@@ -1,8 +1,8 @@
 // Air Purifier Card
 import './cards/air-purifier-card/air-purifier-card';
 
-// Add new card imports here:
-// import './cards/your-card/your-card';
+// Light Card
+import './cards/light-card/light-card';
 
 import { CARD_VERSION } from './const';
 
