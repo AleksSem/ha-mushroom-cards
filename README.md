@@ -8,14 +8,18 @@ Additional custom Lovelace cards for [Mushroom](https://github.com/piitaya/lovel
 
 A card for controlling Xiaomi air purifiers with support for:
 
-- Power on/off control
-- Preset mode selection (Auto, Silent, Favorite, Fan)
-- Favorite level adjustment
-- PM2.5, temperature, humidity stats
-- Filter life remaining
+- Power on/off control with animated icon
+- Preset mode selection (Auto, Silent, Favorite, Low, Medium, High)
+- Favorite level slider (0–14)
+- PM2.5, temperature, humidity, motor speed stats
+- PM2.5 color coding based on AQI level
+- AQI badge in card header with color and tooltip
+- Filter life progress bar with color coding
 - Settings: child lock, LED, buzzer
 - Compact view mode
 - Animated icon
+- Entity auto-discovery with manual override support
+- Multi-language support (English, Russian)
 
 ## Installation
 
@@ -24,16 +28,15 @@ A card for controlling Xiaomi air purifiers with support for:
 1. Open HACS in Home Assistant
 2. Go to **Frontend** section
 3. Click the three dots menu → **Custom repositories**
-4. Add `https://github.com/AleksSem/ha-mushroom-cards` with category **Integration**
+4. Add `https://github.com/AleksSem/ha-mushroom-cards` with category **Lovelace**
 5. Click **Install**
 6. Restart Home Assistant
-7. Go to **Settings → Devices & Services → Add Integration** and search for **HA Mushroom Cards**
 
 ### Manual
 
-1. Copy the `custom_components/ha_mushroom_cards` folder to your `config/custom_components/` directory
-2. Restart Home Assistant
-3. Go to **Settings → Devices & Services → Add Integration** and search for **HA Mushroom Cards**
+1. Copy `custom_components/ha_mushroom_cards/ha-mushroom-cards.js` to your `config/www/` directory
+2. In Home Assistant go to **Settings → Dashboards → Resources**
+3. Add `/local/ha-mushroom-cards.js` as a JavaScript Module
 
 ## Configuration
 
@@ -51,6 +54,7 @@ show_settings: true
 show_filter_info: true
 compact_view: false
 icon_animation: true
+show_aqi_badge: true
 ```
 
 ### Options
@@ -62,11 +66,12 @@ icon_animation: true
 | `show_name` | boolean | `true` | Show card name |
 | `show_state` | boolean | `true` | Show current state |
 | `show_toolbar` | boolean | `true` | Show preset mode toolbar |
-| `show_stats` | boolean | `true` | Show PM2.5, temperature, humidity |
-| `show_settings` | boolean | `true` | Show child lock, LED, buzzer |
-| `show_filter_info` | boolean | `true` | Show filter life info |
+| `show_stats` | boolean | `true` | Show PM2.5, temperature, humidity, motor speed |
+| `show_settings` | boolean | `true` | Show child lock, LED, buzzer toggles |
+| `show_filter_info` | boolean | `true` | Show filter life progress bar |
 | `compact_view` | boolean | `false` | Compact card layout |
 | `icon_animation` | boolean | `true` | Animate icon when active |
+| `show_aqi_badge` | boolean | `true` | Show PM2.5 AQI badge in card header |
 
 ### Entity Overrides
 
@@ -87,11 +92,47 @@ led_entity: switch.air_purifier_led
 buzzer_entity: switch.air_purifier_buzzer
 ```
 
+### AQI Color Coding
+
+The PM2.5 badge and stats row use color coding based on air quality:
+
+| PM2.5 | Level | Color |
+|---|---|---|
+| ≤ 12 | Good | Green |
+| ≤ 35 | Moderate | Light Green |
+| ≤ 55 | Unhealthy for Sensitive | Yellow |
+| ≤ 150 | Unhealthy | Orange |
+| ≤ 250 | Very Unhealthy | Deep Orange |
+| > 250 | Hazardous | Red |
+
 ## Development
 
 ```bash
 npm install
 npm run build
+npm run watch  # rebuild on changes
 ```
 
 The build output goes to `custom_components/ha_mushroom_cards/ha-mushroom-cards.js`.
+
+## Project Structure
+
+```
+src/
+├── cards/air-purifier-card/
+│   ├── controls/          # UI controls (power, preset, stats, filter, settings, favorite level)
+│   ├── air-purifier-card.ts
+│   ├── air-purifier-card-editor.ts
+│   ├── const.ts
+│   ├── styles.ts
+│   ├── types.ts
+│   └── utils.ts
+├── shared/
+│   ├── components/        # Reusable UI components (progress-bar, shape-icon, slider, etc.)
+│   └── styles/            # Shared animations and card styles
+├── translations/          # i18n (en, ru)
+├── utils/                 # Helpers (colors, entity resolution, HA integration)
+├── ha-cards.ts            # Entry point
+├── localize.ts
+└── types.ts
+```

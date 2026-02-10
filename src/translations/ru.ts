@@ -30,6 +30,7 @@ const ru: Record<string, string> = {
   'editor.show_filter_info': 'Показать фильтр',
   'editor.compact_view': 'Компактный вид',
   'editor.icon_animation': 'Анимация иконки',
+  'editor.show_aqi_badge': 'Показать индикатор AQI',
   'editor.entity_overrides': 'Переопределение объектов',
   'editor.pm25_entity': 'PM2.5',
   'editor.temperature_entity': 'Температура',

@@ -8,14 +8,21 @@ import { localize } from '../../localize';
 const MAIN_SCHEMA = [
   { name: 'entity', required: true, selector: { entity: { domain: 'fan' } } },
   { name: 'name', selector: { text: {} } },
-  { name: 'show_name', selector: { boolean: {} } },
-  { name: 'show_state', selector: { boolean: {} } },
-  { name: 'show_toolbar', selector: { boolean: {} } },
-  { name: 'show_stats', selector: { boolean: {} } },
-  { name: 'show_settings', selector: { boolean: {} } },
-  { name: 'show_filter_info', selector: { boolean: {} } },
-  { name: 'compact_view', selector: { boolean: {} } },
-  { name: 'icon_animation', selector: { boolean: {} } },
+  {
+    type: 'grid',
+    name: '',
+    schema: [
+      { name: 'show_name', selector: { boolean: {} } },
+      { name: 'show_state', selector: { boolean: {} } },
+      { name: 'show_toolbar', selector: { boolean: {} } },
+      { name: 'show_stats', selector: { boolean: {} } },
+      { name: 'show_settings', selector: { boolean: {} } },
+      { name: 'show_filter_info', selector: { boolean: {} } },
+      { name: 'compact_view', selector: { boolean: {} } },
+      { name: 'icon_animation', selector: { boolean: {} } },
+      { name: 'show_aqi_badge', selector: { boolean: {} } },
+    ],
+  },
 ];
 
 const ENTITY_OVERRIDE_SCHEMA = [
@@ -74,10 +81,23 @@ export class AirPurifierCardEditor extends LitElement {
 
     const lang = this.hass.language || 'en';
 
+    const data = {
+      show_name: true,
+      show_state: true,
+      show_toolbar: true,
+      show_stats: true,
+      show_settings: true,
+      show_filter_info: true,
+      compact_view: false,
+      icon_animation: true,
+      show_aqi_badge: true,
+      ...this._config,
+    };
+
     return html`
       <ha-form
         .hass=${this.hass}
-        .data=${this._config}
+        .data=${data}
         .schema=${MAIN_SCHEMA}
         .computeLabel=${this._computeLabel}
         @value-changed=${this._valueChanged}

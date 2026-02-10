@@ -72,6 +72,7 @@ export class AirPurifierCard extends LitElement {
       show_filter_info: true,
       compact_view: false,
       icon_animation: true,
+      show_aqi_badge: true,
       ...config,
     };
   }
@@ -182,7 +183,7 @@ export class AirPurifierCard extends LitElement {
             ></hac-state-info>
           `
           : nothing}
-        ${pm25 !== undefined
+        ${this._config.show_aqi_badge !== false && pm25 !== undefined
           ? html`
             <div
               class="aqi-badge"
