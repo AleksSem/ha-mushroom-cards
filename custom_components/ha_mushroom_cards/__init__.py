@@ -1,5 +1,6 @@
 """HA Mushroom Cards - Custom Lovelace cards for Home Assistant."""
 
+import hashlib
 import os
 import logging
 
@@ -38,11 +39,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     url = "/local/ha-mushroom-cards/ha-mushroom-cards.js"
 
+    file_hash = ""
+    try:
+        with open(js_path, "rb") as f:
+            file_hash = hashlib.md5(f.read()).hexdigest()[:8]
+    except OSError:
+        pass
+
     await hass.http.async_register_static_paths([
         StaticPathConfig(url, js_path, True)
     ])
 
-    add_extra_js_url(hass, url)
+    cache_param = f"?v={file_hash}" if file_hash else ""
+    add_extra_js_url(hass, f"{url}{cache_param}")
 
     _LOGGER.info("HA Mushroom Cards frontend resource registered")
     return True
