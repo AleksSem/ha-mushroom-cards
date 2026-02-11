@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { animationStyles } from '../styles/animations';
 
 @customElement('hac-shape-icon')
 export class ShapeIcon extends LitElement {
@@ -17,7 +18,7 @@ export class ShapeIcon extends LitElement {
     `;
   }
 
-  static styles = css`
+  static styles = [animationStyles, css`
     :host {
       display: block;
       flex-shrink: 0;
@@ -43,21 +44,7 @@ export class ShapeIcon extends LitElement {
       --mdc-icon-size: 24px;
       color: var(--secondary-text-color);
     }
-    .spin {
-      animation: spin 1.5s linear infinite;
-    }
-    .pulse {
-      animation: pulse 2s ease-in-out infinite;
-    }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
-    }
-  `;
+  `];
 }
 
 declare global {

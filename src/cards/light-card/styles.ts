@@ -1,6 +1,8 @@
 import { css } from 'lit';
+import { timerControlStyles } from '../../shared/styles/timer-styles';
+import { notFoundStyles } from '../../shared/styles/not-found-styles';
 
-export const lightCardStyles = css`
+export const lightCardStyles = [timerControlStyles, notFoundStyles, css`
   /* Header */
   .header {
     display: flex;
@@ -28,11 +30,4 @@ export const lightCardStyles = css`
     flex-shrink: 0;
   }
 
-  /* Not found */
-  .not-found {
-    padding: 16px;
-    text-align: center;
-    color: var(--secondary-text-color);
-    font-size: 14px;
-  }
-`;
+`];

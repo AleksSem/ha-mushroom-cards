@@ -1,13 +1,13 @@
 import { LitElement, html, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { HomeAssistant } from '../../types';
-import { LightCardConfig } from './types';
+import { TimerCardConfig } from './types';
 import { EDITOR_TAG } from './const';
 import { editorStyles } from '../../shared/styles/editor-styles';
 import { computeLabel, fireConfigChanged } from '../../utils/editor-helpers';
 
 const SCHEMA = [
-  { name: 'entity', required: true, selector: { entity: { domain: 'light' } } },
+  { name: 'entity', required: true, selector: { entity: {} } },
   { name: 'name', selector: { text: {} } },
   {
     type: 'grid',
@@ -15,24 +15,29 @@ const SCHEMA = [
     schema: [
       { name: 'show_name', selector: { boolean: {} } },
       { name: 'show_state', selector: { boolean: {} } },
-      { name: 'show_brightness_control', selector: { boolean: {} } },
-      { name: 'show_color_temp_control', selector: { boolean: {} } },
-      { name: 'show_color_control', selector: { boolean: {} } },
-      { name: 'use_light_color', selector: { boolean: {} } },
-      { name: 'icon_animation', selector: { boolean: {} } },
-      { name: 'compact_view', selector: { boolean: {} } },
-      { name: 'hide_controls_when_off', selector: { boolean: {} } },
-      { name: 'show_timer', selector: { boolean: {} } },
+      { name: 'show_presets', selector: { boolean: {} } },
     ],
+  },
+  {
+    name: 'default_action',
+    selector: {
+      select: {
+        options: [
+          { value: 'turn_off', label: 'Turn Off' },
+          { value: 'turn_on', label: 'Turn On' },
+          { value: 'toggle', label: 'Toggle' },
+        ],
+      },
+    },
   },
 ];
 
 @customElement(EDITOR_TAG)
-export class LightCardEditor extends LitElement {
+export class TimerCardEditor extends LitElement {
   @property({ attribute: false }) hass!: HomeAssistant;
-  @state() private _config!: LightCardConfig;
+  @state() private _config!: TimerCardConfig;
 
-  setConfig(config: LightCardConfig): void {
+  setConfig(config: TimerCardConfig): void {
     this._config = config;
   }
 
@@ -48,13 +53,8 @@ export class LightCardEditor extends LitElement {
     const data = {
       show_name: true,
       show_state: true,
-      show_brightness_control: true,
-      show_color_temp_control: true,
-      show_color_control: true,
-      use_light_color: true,
-      icon_animation: true,
-      compact_view: false,
-      hide_controls_when_off: true,
+      show_presets: true,
+      default_action: 'turn_off',
       ...this._config,
     };
 
@@ -74,6 +74,6 @@ export class LightCardEditor extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    [EDITOR_TAG]: LightCardEditor;
+    [EDITOR_TAG]: TimerCardEditor;
   }
 }

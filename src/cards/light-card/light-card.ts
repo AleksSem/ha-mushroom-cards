@@ -1,6 +1,6 @@
 import { LitElement, html, nothing, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { HomeAssistant, HassEntity } from '../../types';
+import { HomeAssistant, HassEntity, Schedule } from '../../types';
 import { localize } from '../../localize';
 import { cardStyles } from '../../shared/styles/card-styles';
 import { LightCardConfig } from './types';
@@ -21,12 +21,15 @@ import { renderPowerControl } from './controls/power-control';
 import { renderBrightnessControl } from './controls/brightness-control';
 import { renderColorTempControl } from './controls/color-temp-control';
 import { renderColorControl } from './controls/color-control';
+import { renderTimerButton, renderTimerDialog } from '../../shared/controls/timer-control';
+import { schedulerManager } from '../../utils/scheduler-api';
 
 // Import shared components so they register
 import '../../shared/components/shape-icon';
 import '../../shared/components/state-info';
 import '../../shared/components/slider';
 import '../../shared/components/gradient-slider';
+import '../../shared/components/timer-badge';
 
 // Import editor
 import './light-card-editor';
@@ -41,6 +44,16 @@ registerCard({
 export class LightCard extends LitElement {
   @property({ attribute: false }) hass!: HomeAssistant;
   @state() private _config!: LightCardConfig;
+  @state() private _timerDialogOpen = false;
+  @state() private _schedules: Schedule[] = [];
+
+  private _schedulerUnsub?: () => void;
+  private _schedulerConnected = false;
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this._schedulerUnsub?.();
+  }
 
   static getConfigElement() {
     return document.createElement(EDITOR_TAG);
@@ -76,7 +89,7 @@ export class LightCard extends LitElement {
   }
 
   shouldUpdate(changedProps: PropertyValues): boolean {
-    if (changedProps.has('_config')) return true;
+    if (changedProps.has('_config') || changedProps.has('_timerDialogOpen') || changedProps.has('_schedules')) return true;
     if (!changedProps.has('hass')) return true;
 
     const oldHass = changedProps.get('hass') as HomeAssistant | undefined;
@@ -84,6 +97,26 @@ export class LightCard extends LitElement {
 
     const entityId = this._config.entity;
     return oldHass.states[entityId] !== this.hass.states[entityId];
+  }
+
+  updated(changedProps: PropertyValues) {
+    if (
+      changedProps.has('hass') &&
+      this.hass &&
+      !this._schedulerConnected &&
+      this._config?.show_timer
+    ) {
+      this._schedulerConnected = true;
+      this._schedulerUnsub = schedulerManager.subscribe(() => {
+        this._schedules = schedulerManager.getSchedulesForEntity(
+          this._config?.entity,
+        );
+      });
+      schedulerManager.connect(this.hass);
+      this._schedules = schedulerManager.getSchedulesForEntity(
+        this._config.entity,
+      );
+    }
   }
 
   private get _lang(): string {
@@ -113,6 +146,14 @@ export class LightCard extends LitElement {
           ${this._renderHeader(entity, active, name, lang)}
           ${!compact && (active || this._config.hide_controls_when_off === false) ? this._renderControls(entity) : nothing}
         </div>
+        ${this._config.show_timer ? renderTimerDialog(
+          this.hass,
+          this._config.entity,
+          name,
+          this._timerDialogOpen,
+          this._config.timer_default_action || 'turn_off',
+          () => { this._timerDialogOpen = false; },
+        ) : nothing}
       </ha-card>
     `;
   }
@@ -149,6 +190,12 @@ export class LightCard extends LitElement {
               .secondary=${this._config.show_state !== false ? secondary : ''}
             ></hac-state-info>
           `
+          : nothing}
+        ${this._config.show_timer
+          ? renderTimerButton(
+              this._schedules,
+              () => { this._timerDialogOpen = true; },
+            )
           : nothing}
       </div>
     `;

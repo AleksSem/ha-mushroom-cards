@@ -49,6 +49,26 @@ const ru: Record<string, string> = {
   'editor.show_color_control': 'Цвет',
   'editor.use_light_color': 'Цвет лампы',
   'editor.hide_controls_when_off': 'Скрывать управление при выключении',
+  // Timer
+  'timer.card.name': 'Таймер',
+  'timer.card.description': 'Таймеры включения/выключения устройств',
+  'timer.title': 'Таймер',
+  'timer.duration_mode': 'Через',
+  'timer.time_mode': 'В конкретное время',
+  'timer.hours': 'ч',
+  'timer.minutes': 'мин',
+  'timer.start': 'Запустить',
+  'timer.cancel': 'Отменить',
+  'timer.active': 'Активные таймеры',
+  'timer.turn_on': 'Включить',
+  'timer.turn_off': 'Выключить',
+  'timer.toggle': 'Переключить',
+  'timer.custom': 'Кастомное',
+  'timer.action': 'Действие',
+  'timer.no_active': 'Нет активных таймеров',
+  'editor.show_timer': 'Показывать таймер',
+  'editor.default_action': 'Действие по умолчанию',
+  'editor.show_presets': 'Показывать пресеты',
 };
 
 export default ru;

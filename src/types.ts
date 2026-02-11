@@ -13,6 +13,13 @@ export interface HomeAssistant {
     service: string,
     serviceData?: Record<string, any>,
   ): Promise<void>;
+  callWS<T = any>(msg: Record<string, any>): Promise<T>;
+  connection: {
+    subscribeMessage(
+      callback: (msg: any) => void,
+      msg: Record<string, any>,
+    ): Promise<() => void>;
+  };
   localize(key: string, ...args: any[]): string;
   language: string;
   themes: {
@@ -20,6 +27,18 @@ export interface HomeAssistant {
   };
   formatEntityState?(entity: HassEntity): string;
   formatEntityAttributeValue?(entity: HassEntity, attribute: string): string;
+}
+
+export interface Schedule {
+  id: string;
+  target_entity: string;
+  action: string;
+  service?: string | null;
+  service_data?: Record<string, any> | null;
+  trigger_at: string;
+  created_at: string;
+  status: string;
+  duration?: number | null;
 }
 
 export interface LovelaceCardConfig {

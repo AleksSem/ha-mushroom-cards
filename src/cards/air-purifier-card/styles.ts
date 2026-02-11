@@ -1,6 +1,8 @@
 import { css } from 'lit';
+import { timerControlStyles } from '../../shared/styles/timer-styles';
+import { notFoundStyles } from '../../shared/styles/not-found-styles';
 
-export const airPurifierCardStyles = css`
+export const airPurifierCardStyles = [timerControlStyles, notFoundStyles, css`
   /* Header */
   .header {
     display: flex;
@@ -110,11 +112,4 @@ export const airPurifierCardStyles = css`
     justify-content: center;
   }
 
-  /* Not found */
-  .not-found {
-    padding: 16px;
-    text-align: center;
-    color: var(--secondary-text-color);
-    font-size: 14px;
-  }
-`;
+`];

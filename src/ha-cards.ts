@@ -4,6 +4,9 @@ import './cards/air-purifier-card/air-purifier-card';
 // Light Card
 import './cards/light-card/light-card';
 
+// Timer Card
+import './cards/timer-card/timer-card';
+
 import { CARD_VERSION } from './const';
 
 console.info(

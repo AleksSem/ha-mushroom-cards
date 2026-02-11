@@ -7,10 +7,10 @@ export const animationStyles = css`
   }
   @keyframes pulse {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    50% { opacity: 0.6; }
   }
   .spin {
-    animation: spin 2s linear infinite;
+    animation: spin 1.5s linear infinite;
   }
   .pulse {
     animation: pulse 2s ease-in-out infinite;

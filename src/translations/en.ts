@@ -49,6 +49,26 @@ const en: Record<string, string> = {
   'editor.show_color_control': 'Color Control',
   'editor.use_light_color': 'Use Light Color',
   'editor.hide_controls_when_off': 'Hide controls when off',
+  // Timer
+  'timer.card.name': 'Timer',
+  'timer.card.description': 'Schedule on/off timers for any entity',
+  'timer.title': 'Timer',
+  'timer.duration_mode': 'After',
+  'timer.time_mode': 'At time',
+  'timer.hours': 'h',
+  'timer.minutes': 'min',
+  'timer.start': 'Start Timer',
+  'timer.cancel': 'Cancel',
+  'timer.active': 'Active timers',
+  'timer.turn_on': 'Turn On',
+  'timer.turn_off': 'Turn Off',
+  'timer.toggle': 'Toggle',
+  'timer.custom': 'Custom',
+  'timer.action': 'Action',
+  'timer.no_active': 'No active timers',
+  'editor.show_timer': 'Show timer',
+  'editor.default_action': 'Default action',
+  'editor.show_presets': 'Show presets',
 };
 
 export default en;

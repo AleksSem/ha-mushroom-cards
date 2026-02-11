@@ -4,6 +4,8 @@ import { HomeAssistant } from '../../types';
 import { AirPurifierCardConfig } from './types';
 import { EDITOR_TAG } from './const';
 import { localize } from '../../localize';
+import { editorStyles } from '../../shared/styles/editor-styles';
+import { computeLabel, fireConfigChanged } from '../../utils/editor-helpers';
 
 const MAIN_SCHEMA = [
   { name: 'entity', required: true, selector: { entity: { domain: 'fan' } } },
@@ -20,6 +22,7 @@ const MAIN_SCHEMA = [
       { name: 'show_filter_info', selector: { boolean: {} } },
       { name: 'compact_view', selector: { boolean: {} } },
       { name: 'icon_animation', selector: { boolean: {} } },
+      { name: 'show_timer', selector: { boolean: {} } },
     ],
   },
 ];
@@ -47,28 +50,14 @@ export class AirPurifierCardEditor extends LitElement {
     this._config = config;
   }
 
-  private _computeLabel = (schema: any): string => {
-    const lang = this.hass?.language || 'en';
-    return localize(`editor.${schema.name}`, lang) || schema.name;
-  };
+  private _computeLabel = (schema: any): string => computeLabel(this.hass, schema);
 
   private _valueChanged(ev: CustomEvent): void {
-    const config = ev.detail.value;
-    this.dispatchEvent(new CustomEvent('config-changed', {
-      detail: { config },
-      bubbles: true,
-      composed: true,
-    }));
+    fireConfigChanged(this, ev.detail.value);
   }
 
   private _overrideValueChanged(ev: CustomEvent): void {
-    const overrides = ev.detail.value;
-    const config = { ...this._config, ...overrides };
-    this.dispatchEvent(new CustomEvent('config-changed', {
-      detail: { config },
-      bubbles: true,
-      composed: true,
-    }));
+    fireConfigChanged(this, { ...this._config, ...ev.detail.value });
   }
 
   private _toggleOverrides(): void {
@@ -119,11 +108,7 @@ export class AirPurifierCardEditor extends LitElement {
     `;
   }
 
-  static styles = css`
-    :host {
-      display: block;
-      --ha-space-6: 4px;
-    }
+  static styles = [editorStyles, css`
     .overrides-section {
       margin-top: 16px;
     }
@@ -144,14 +129,7 @@ export class AirPurifierCardEditor extends LitElement {
     .overrides-toggle ha-icon {
       --mdc-icon-size: 20px;
     }
-    ha-selector-boolean {
-      display: flex;
-      justify-content: flex-start;
-    }
-    ha-formfield {
-      min-height: 20px;
-    }
-  `;
+  `];
 }
 
 declare global {

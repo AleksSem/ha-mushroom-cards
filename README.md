@@ -18,6 +18,7 @@ A card for controlling Xiaomi air purifiers with support for:
 - Compact view mode
 - Animated icon
 - Entity auto-discovery with manual override support
+- Timer integration (schedule on/off via Python backend scheduler)
 - Multi-language support (English, Russian)
 
 ### Light Card
@@ -29,7 +30,19 @@ A card for controlling smart lights with support for:
 - Color temperature gradient slider (Kelvin)
 - Color/hue gradient slider (0–360°)
 - Icon animation (pulse)
+- Hide controls when light is off
 - Compact view mode
+- Timer integration (schedule on/off via Python backend scheduler)
+- Multi-language support (English, Russian)
+
+### Timer Card
+
+A standalone card for scheduling on/off timers for any entity:
+
+- Preset durations (configurable)
+- Custom duration and specific time modes
+- Configurable action (turn_off, turn_on, toggle, custom service)
+- Active timer badge with countdown
 - Multi-language support (English, Russian)
 
 ## Installation
@@ -65,6 +78,7 @@ show_settings: true
 show_filter_info: true
 compact_view: false
 icon_animation: true
+show_timer: false
 ```
 
 #### Options
@@ -81,6 +95,8 @@ icon_animation: true
 | `show_filter_info` | boolean | `true` | Show filter life progress bar |
 | `compact_view` | boolean | `false` | Compact card layout |
 | `icon_animation` | boolean | `true` | Animate icon when active |
+| `show_timer` | boolean | `false` | Show timer button for scheduling on/off |
+| `timer_default_action` | string | `turn_off` | Default timer action (turn_off, turn_on, toggle) |
 
 ### Light Card
 
@@ -96,6 +112,8 @@ show_color_control: true
 use_light_color: true
 icon_animation: true
 compact_view: false
+hide_controls_when_off: false
+show_timer: false
 ```
 
 #### Options
@@ -112,6 +130,30 @@ compact_view: false
 | `use_light_color` | boolean | `true` | Tint icon with the light's current color |
 | `icon_animation` | boolean | `true` | Pulse animation when light is on |
 | `compact_view` | boolean | `false` | Compact card layout |
+| `hide_controls_when_off` | boolean | `false` | Hide sliders when light is off |
+| `show_timer` | boolean | `false` | Show timer button for scheduling on/off |
+| `timer_default_action` | string | `turn_off` | Default timer action (turn_off, turn_on, toggle) |
+
+### Timer Card
+
+```yaml
+type: custom:timer-card
+entity: fan.air_purifier
+```
+
+#### Options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `entity` | string | **Required** | Target entity ID |
+| `name` | string | Entity name | Card title |
+| `show_name` | boolean | `true` | Show card name |
+| `show_state` | boolean | `true` | Show current state |
+| `default_action` | string | `turn_off` | Default action (turn_off, turn_on, toggle) |
+| `custom_service` | string | — | Custom service to call (e.g. `script.my_script`) |
+| `custom_service_data` | object | — | Data to pass to custom service |
+| `presets` | number[] | `[15, 30, 60, 120]` | Preset duration buttons (minutes) |
+| `show_presets` | boolean | `true` | Show preset duration buttons |
 
 ### Entity Overrides
 
@@ -168,19 +210,50 @@ src/
 │   │   ├── styles.ts
 │   │   ├── types.ts
 │   │   └── utils.ts
-│   └── light-card/
-│       ├── controls/      # UI controls (power, brightness, color temp, color)
-│       ├── light-card.ts
-│       ├── light-card-editor.ts
+│   ├── light-card/
+│   │   ├── controls/      # UI controls (power, brightness, color temp, color)
+│   │   ├── light-card.ts
+│   │   ├── light-card-editor.ts
+│   │   ├── const.ts
+│   │   ├── styles.ts
+│   │   ├── types.ts
+│   │   └── utils.ts
+│   └── timer-card/
+│       ├── timer-card.ts
+│       ├── timer-card-editor.ts
 │       ├── const.ts
 │       ├── styles.ts
-│       ├── types.ts
-│       └── utils.ts
+│       └── types.ts
 ├── shared/
-│   ├── components/        # Reusable UI components (progress-bar, shape-icon, slider, gradient-slider, etc.)
-│   └── styles/            # Shared animations and card styles
+│   ├── components/        # Reusable UI components (hac-* prefix)
+│   │   ├── gradient-slider.ts
+│   │   ├── progress-bar.ts
+│   │   ├── shape-icon.ts
+│   │   ├── slider.ts
+│   │   ├── state-info.ts
+│   │   ├── state-item.ts
+│   │   ├── timer-badge.ts
+│   │   ├── timer-dialog.ts
+│   │   ├── timer-picker.ts
+│   │   └── toggle-button.ts
+│   ├── controls/          # Shared render functions used across cards
+│   │   └── timer-control.ts
+│   └── styles/
+│       ├── animations.ts
+│       ├── card-styles.ts
+│       ├── editor-styles.ts
+│       ├── not-found-styles.ts
+│       └── timer-styles.ts
 ├── translations/          # i18n (en, ru)
-├── utils/                 # Helpers (colors, entity resolution, HA integration)
+├── utils/
+│   ├── base-element.ts
+│   ├── colors.ts
+│   ├── editor-helpers.ts
+│   ├── entity.ts
+│   ├── ha-helper.ts
+│   ├── register-card.ts
+│   ├── scheduler-api.ts
+│   └── timer-utils.ts
 ├── ha-cards.ts            # Entry point
 ├── localize.ts
 └── types.ts

@@ -22,4 +22,7 @@ export interface AirPurifierCardConfig extends LovelaceCardConfig {
   child_lock_entity?: string;
   led_entity?: string;
   buzzer_entity?: string;
+  // Timer
+  show_timer?: boolean;
+  timer_default_action?: string;
 }

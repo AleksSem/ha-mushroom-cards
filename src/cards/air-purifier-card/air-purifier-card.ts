@@ -1,6 +1,6 @@
 import { LitElement, html, nothing, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { HomeAssistant, HassEntity } from '../../types';
+import { HomeAssistant, HassEntity, Schedule } from '../../types';
 import { localize } from '../../localize';
 import { cardStyles } from '../../shared/styles/card-styles';
 import { AirPurifierCardConfig } from './types';
@@ -20,6 +20,8 @@ import { renderStatsRow } from './controls/stats-row';
 import { renderFavoriteControl } from './controls/favorite-level-control';
 import { renderFilterBar } from './controls/filter-bar';
 import { renderSettingsRow } from './controls/settings-row';
+import { renderTimerButton, renderTimerDialog } from '../../shared/controls/timer-control';
+import { schedulerManager } from '../../utils/scheduler-api';
 
 // Import shared components so they register
 import '../../shared/components/shape-icon';
@@ -28,6 +30,7 @@ import '../../shared/components/state-item';
 import '../../shared/components/slider';
 import '../../shared/components/progress-bar';
 import '../../shared/components/toggle-button';
+import '../../shared/components/timer-badge';
 
 // Import editor
 import './air-purifier-card-editor';
@@ -42,9 +45,13 @@ registerCard({
 export class AirPurifierCard extends LitElement {
   @property({ attribute: false }) hass!: HomeAssistant;
   @state() private _config!: AirPurifierCardConfig;
+  @state() private _timerDialogOpen = false;
+  @state() private _schedules: Schedule[] = [];
 
   private _resolved?: ResolvedEntities;
   private _lastEntity?: string;
+  private _schedulerUnsub?: () => void;
+  private _schedulerConnected = false;
 
   static getConfigElement() {
     return document.createElement(EDITOR_TAG);
@@ -78,8 +85,13 @@ export class AirPurifierCard extends LitElement {
     return this._config?.compact_view ? 2 : 4;
   }
 
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this._schedulerUnsub?.();
+  }
+
   shouldUpdate(changedProps: PropertyValues): boolean {
-    if (changedProps.has('_config')) return true;
+    if (changedProps.has('_config') || changedProps.has('_timerDialogOpen') || changedProps.has('_schedules')) return true;
     if (!changedProps.has('hass')) return true;
 
     const oldHass = changedProps.get('hass') as HomeAssistant | undefined;
@@ -95,6 +107,26 @@ export class AirPurifierCard extends LitElement {
     }
 
     return false;
+  }
+
+  updated(changedProps: PropertyValues) {
+    if (
+      changedProps.has('hass') &&
+      this.hass &&
+      !this._schedulerConnected &&
+      this._config?.show_timer
+    ) {
+      this._schedulerConnected = true;
+      this._schedulerUnsub = schedulerManager.subscribe(() => {
+        this._schedules = schedulerManager.getSchedulesForEntity(
+          this._config?.entity,
+        );
+      });
+      schedulerManager.connect(this.hass);
+      this._schedules = schedulerManager.getSchedulesForEntity(
+        this._config.entity,
+      );
+    }
   }
 
   private _getResolved(): ResolvedEntities {
@@ -150,6 +182,14 @@ export class AirPurifierCard extends LitElement {
             ? renderSettingsRow(this.hass, resolved.childLock, resolved.led, resolved.buzzer, lang)
             : nothing}
         </div>
+        ${this._config.show_timer ? renderTimerDialog(
+          this.hass,
+          this._config.entity,
+          name,
+          this._timerDialogOpen,
+          this._config.timer_default_action || 'turn_off',
+          () => { this._timerDialogOpen = false; },
+        ) : nothing}
       </ha-card>
     `;
   }
@@ -177,6 +217,12 @@ export class AirPurifierCard extends LitElement {
               .secondary=${this._config.show_state !== false ? secondary : ''}
             ></hac-state-info>
           `
+          : nothing}
+        ${this._config.show_timer
+          ? renderTimerButton(
+              this._schedules,
+              () => { this._timerDialogOpen = true; },
+            )
           : nothing}
       </div>
     `;

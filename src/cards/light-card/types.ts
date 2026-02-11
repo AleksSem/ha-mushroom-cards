@@ -12,4 +12,7 @@ export interface LightCardConfig extends LovelaceCardConfig {
   icon_animation?: boolean;
   compact_view?: boolean;
   hide_controls_when_off?: boolean;
+  // Timer
+  show_timer?: boolean;
+  timer_default_action?: string;
 }
