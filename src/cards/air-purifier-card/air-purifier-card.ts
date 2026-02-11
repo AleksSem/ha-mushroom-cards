@@ -212,6 +212,7 @@ export class AirPurifierCard extends LitElement {
           ? renderTimerButton(
               this._schedules,
               () => { this._timerDialogOpen = true; },
+              lang,
             )
           : nothing}
       </div>

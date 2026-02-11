@@ -1,11 +1,18 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { Schedule } from '../../types';
+import { localize } from '../../localize';
+
+const DAY_KEYS = [
+  'timer.day_mon', 'timer.day_tue', 'timer.day_wed', 'timer.day_thu',
+  'timer.day_fri', 'timer.day_sat', 'timer.day_sun',
+];
 
 @customElement('hac-timer-badge')
 export class TimerBadge extends LitElement {
   @property({ attribute: false }) schedule!: Schedule;
   @property({ type: Boolean }) compact = false;
+  @property() lang = 'en';
 
   @state() private _remaining = '';
   private _interval?: ReturnType<typeof setInterval>;
@@ -13,7 +20,9 @@ export class TimerBadge extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     this._updateCountdown();
-    this._interval = setInterval(() => this._updateCountdown(), 1000);
+    if (!this.schedule?.recurring) {
+      this._interval = setInterval(() => this._updateCountdown(), 1000);
+    }
   }
 
   disconnectedCallback() {
@@ -32,6 +41,11 @@ export class TimerBadge extends LitElement {
 
   private _updateCountdown() {
     if (!this.schedule) return;
+
+    if (this.schedule.recurring) {
+      this._remaining = this._formatRecurring();
+      return;
+    }
 
     const now = Date.now();
     const target = new Date(this.schedule.trigger_at).getTime();
@@ -60,6 +74,21 @@ export class TimerBadge extends LitElement {
     }
   }
 
+  private _formatRecurring(): string {
+    const d = new Date(this.schedule.trigger_at);
+    const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    const days = this.schedule.days_of_week;
+
+    if (!days || days.length === 7) {
+      return time;
+    }
+
+    // Convert JS getDay (0=Sun) to our index (0=Mon): (jsDay + 6) % 7
+    const dayIndex = (d.getDay() + 6) % 7;
+    const dayAbbr = localize(DAY_KEYS[dayIndex], this.lang);
+    return `${dayAbbr} ${time}`;
+  }
+
   private get _actionClass(): string {
     switch (this.schedule?.action) {
       case 'turn_on': return 'action-on';
@@ -79,11 +108,15 @@ export class TimerBadge extends LitElement {
     );
   }
 
+  private get _icon(): string {
+    return this.schedule?.recurring ? 'mdi:calendar-clock' : 'mdi:timer-outline';
+  }
+
   render() {
     if (this.compact) {
       return html`
         <span class="badge compact ${this._actionClass}" @click=${this._cancel}>
-          <ha-icon icon="mdi:timer-outline"></ha-icon>
+          <ha-icon icon=${this._icon}></ha-icon>
           ${this._remaining}
         </span>
       `;
@@ -91,7 +124,7 @@ export class TimerBadge extends LitElement {
 
     return html`
       <span class="badge ${this._actionClass}" @click=${this._cancel}>
-        <ha-icon icon="mdi:timer-outline"></ha-icon>
+        <ha-icon icon=${this._icon}></ha-icon>
         ${this._remaining}
       </span>
     `;

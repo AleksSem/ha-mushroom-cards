@@ -92,8 +92,8 @@ A standalone card for scheduling on/off timers for any entity:
 - Preset durations (configurable)
 - Custom duration and specific time modes
 - Configurable action (turn_off, turn_on, toggle, custom service)
-- Active timer badge with countdown, color-coded by action (green for on, red for off, amber for toggle)
-- Recurring day-of-week timers (select days, auto-repeats weekly)
+- Active timer badge: countdown for one-shot timers, day+time for recurring (e.g. "MO 16:10" for specific days, "16:10" for daily), color-coded by action (green for on, red for off, amber for toggle)
+- Recurring day-of-week timers (select days, auto-repeats weekly); time mode without day selection creates a daily recurring timer
 - Multi-language support (English, Russian)
 
 ## Installation

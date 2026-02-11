@@ -6,18 +6,18 @@ import '../components/timer-dialog';
 export function renderTimerButton(
   activeSchedules: Schedule[],
   onOpenDialog: () => void,
+  lang = 'en',
 ): TemplateResult {
   const hasActive = activeSchedules.length > 0;
-  const oneShot = activeSchedules.filter((s) => !s.recurring);
 
   return html`
     <div class="timer-control">
       <button class="timer-btn ${hasActive ? 'active' : ''}" @click=${onOpenDialog}>
         <ha-icon icon="mdi:timer-outline"></ha-icon>
       </button>
-      ${oneShot.length > 0
-        ? oneShot.map(
-            (s) => html`<hac-timer-badge .schedule=${s} compact></hac-timer-badge>`,
+      ${hasActive
+        ? activeSchedules.map(
+            (s) => html`<hac-timer-badge .schedule=${s} .lang=${lang} compact></hac-timer-badge>`,
           )
         : nothing}
     </div>

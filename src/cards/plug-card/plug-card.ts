@@ -195,6 +195,7 @@ export class PlugCard extends LitElement {
           ? renderTimerButton(
               this._schedules,
               () => { this._timerDialogOpen = true; },
+              lang,
             )
           : nothing}
       </div>

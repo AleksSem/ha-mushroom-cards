@@ -88,9 +88,9 @@ export class TimerPicker extends LitElement {
     } else {
       if (!this._timeValue) return;
       const detail: Record<string, any> = { time: this._timeValue, action: this._selectedAction };
-      if (this._selectedDays.length > 0) {
-        detail.days_of_week = this._selectedDays;
-      }
+      detail.days_of_week = this._selectedDays.length > 0
+        ? this._selectedDays
+        : [0, 1, 2, 3, 4, 5, 6];
       this.dispatchEvent(
         new CustomEvent('timer-start', {
           detail,

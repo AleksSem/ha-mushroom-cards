@@ -184,12 +184,11 @@ export class TimerCard extends LitElement {
     stateStr: string,
     lang: string,
   ) {
-    const oneShot = this._schedules.filter((s) => !s.recurring);
-    const timerInfo = oneShot.length > 0 ? oneShot[0] : null;
+    const firstSchedule = this._schedules.length > 0 ? this._schedules[0] : null;
 
     let secondary = stateStr;
-    if (timerInfo) {
-      const actionLabel = getActionLabel(timerInfo.action, lang);
+    if (firstSchedule) {
+      const actionLabel = getActionLabel(firstSchedule.action, lang);
       secondary = `${stateStr} · ${actionLabel}`;
     }
 
@@ -212,10 +211,11 @@ export class TimerCard extends LitElement {
               ></hac-state-info>
             `
           : nothing}
-        ${timerInfo
+        ${firstSchedule
           ? html`
               <hac-timer-badge
-                .schedule=${timerInfo}
+                .schedule=${firstSchedule}
+                .lang=${lang}
                 compact
               ></hac-timer-badge>
             `
@@ -237,7 +237,7 @@ export class TimerCard extends LitElement {
           ? oneShot.map(
               (s) => html`
                 <div class="timer-item">
-                  <hac-timer-badge .schedule=${s}></hac-timer-badge>
+                  <hac-timer-badge .schedule=${s} .lang=${lang}></hac-timer-badge>
                   <span class="action-text">
                     ${getActionLabel(s.action, lang)}
                   </span>
