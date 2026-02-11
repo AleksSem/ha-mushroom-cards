@@ -29,3 +29,22 @@ export function buildScheduleParams(
   }
   return params;
 }
+
+export function buildGroupScheduleParams(
+  entityIds: string[],
+  detail: { action: string; duration?: number; time?: string },
+): CreateScheduleParams {
+  const domain = entityIds[0].split('.')[0];
+  const params: CreateScheduleParams = {
+    target_entity: entityIds[0],
+    action: 'custom',
+    service: `${domain}.${detail.action}`,
+    service_data: { entity_id: entityIds },
+  };
+  if (detail.duration) {
+    params.duration = detail.duration;
+  } else if (detail.time) {
+    params.time = detail.time;
+  }
+  return params;
+}

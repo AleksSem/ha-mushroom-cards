@@ -29,7 +29,7 @@ export function renderTimerButton(
 
 export function renderTimerDialog(
   hass: HomeAssistant,
-  entityId: string,
+  entityId: string | string[],
   entityName: string,
   open: boolean,
   defaultAction: string,

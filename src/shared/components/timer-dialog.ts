@@ -3,7 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { HomeAssistant, Schedule } from '../../types';
 import { localize } from '../../localize';
 import { schedulerManager } from '../../utils/scheduler-api';
-import { getActionLabel, buildScheduleParams } from '../../utils/timer-utils';
+import { getActionLabel, buildScheduleParams, buildGroupScheduleParams } from '../../utils/timer-utils';
 
 import './timer-picker';
 import './timer-badge';
@@ -11,7 +11,7 @@ import './timer-badge';
 @customElement('hac-timer-dialog')
 export class TimerDialog extends LitElement {
   @property({ attribute: false }) hass!: HomeAssistant;
-  @property() entityId = '';
+  @property({ attribute: false }) entityId: string | string[] = '';
   @property() entityName = '';
   @property({ type: Boolean }) open = false;
   @property() defaultAction = 'turn_off';
@@ -19,10 +19,14 @@ export class TimerDialog extends LitElement {
   @state() private _schedules: Schedule[] = [];
   private _unsubscribe?: () => void;
 
+  private get _primaryEntityId(): string {
+    return Array.isArray(this.entityId) ? this.entityId[0] : this.entityId;
+  }
+
   connectedCallback() {
     super.connectedCallback();
     this._unsubscribe = schedulerManager.subscribe(() => {
-      this._schedules = schedulerManager.getSchedulesForEntity(this.entityId);
+      this._schedules = schedulerManager.getSchedulesForEntity(this._primaryEntityId);
     });
   }
 
@@ -36,7 +40,7 @@ export class TimerDialog extends LitElement {
       schedulerManager.connect(this.hass);
     }
     if (changedProps.has('entityId')) {
-      this._schedules = schedulerManager.getSchedulesForEntity(this.entityId);
+      this._schedules = schedulerManager.getSchedulesForEntity(this._primaryEntityId);
     }
   }
 
@@ -48,7 +52,9 @@ export class TimerDialog extends LitElement {
   }
 
   private async _onTimerStart(e: CustomEvent) {
-    const params = buildScheduleParams(this.entityId, e.detail);
+    const params = Array.isArray(this.entityId) && this.entityId.length > 1
+      ? buildGroupScheduleParams(this.entityId, e.detail)
+      : buildScheduleParams(this._primaryEntityId, e.detail);
     await schedulerManager.createSchedule(this.hass, params);
   }
 

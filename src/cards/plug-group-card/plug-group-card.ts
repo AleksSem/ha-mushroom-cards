@@ -157,7 +157,7 @@ export class PlugGroupCard extends LitElement {
         </div>
         ${this._config.show_timer ? renderTimerDialog(
           this.hass,
-          this._config.entities[0],
+          this._config.entities,
           name,
           this._timerDialogOpen,
           this._config.timer_default_action || 'turn_off',
