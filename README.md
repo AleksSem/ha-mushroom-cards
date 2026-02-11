@@ -2,6 +2,8 @@
 
 Additional custom Lovelace cards for [Mushroom](https://github.com/piitaya/lovelace-mushroom) and Home Assistant.
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=AleksSem&repository=ha-mushroom-cards&category=plugin)
+
 ## Table of Contents
 
 - [Cards](#cards)
@@ -97,25 +99,38 @@ A standalone card for scheduling on/off timers for any entity:
 
 ### HACS (Recommended)
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=AleksSem&repository=ha-mushroom-cards&category=plugin)
+
+Or manually:
+
 1. Open HACS in Home Assistant
 2. Go to **Frontend** section
 3. Click the three dots menu → **Custom repositories**
 4. Add `https://github.com/AleksSem/ha-mushroom-cards` with category **Lovelace**
 5. Click **Install**
 6. Restart Home Assistant
+7. Go to **Settings → Devices & Services → Add Integration**
+8. Search for **HA Mushroom Cards** and click **Submit**
+
+> Cards load automatically on restart. The config entry enables timer/scheduler functionality.
 
 ### Manual
 
-1. Copy `custom_components/ha_mushroom_cards/ha-mushroom-cards.js` to your `config/www/` directory
-2. In Home Assistant go to **Settings → Dashboards → Resources**
-3. Add `/local/ha-mushroom-cards.js` as a JavaScript Module
+1. Copy the entire `custom_components/ha_mushroom_cards/` folder to your `config/custom_components/` directory
+2. Restart Home Assistant
+3. The frontend resource is registered automatically — no manual Lovelace resource needed
+4. Go to **Settings → Devices & Services → Add Integration**
+5. Search for **HA Mushroom Cards** and click **Submit**
+6. This enables the timer/scheduler backend
+
+> Cards load automatically on restart. The config entry enables timer/scheduler functionality.
 
 ## Configuration
 
 ### Air Purifier Card
 
 ```yaml
-type: custom:air-purifier-card
+type: custom:hac-air-purifier-card
 entity: fan.air_purifier
 name: Air Purifier
 show_name: true
@@ -149,7 +164,7 @@ show_timer: false
 ### Light Card
 
 ```yaml
-type: custom:light-card
+type: custom:hac-light-card
 entity: light.living_room
 name: Living Room Light
 show_name: true
@@ -185,7 +200,7 @@ show_timer: false
 ### Plug Card
 
 ```yaml
-type: custom:plug-card
+type: custom:hac-plug-card
 entity: switch.smart_plug
 name: Smart Plug
 show_name: true
@@ -221,7 +236,7 @@ show_timer: false
 #### Entity Overrides
 
 ```yaml
-type: custom:plug-card
+type: custom:hac-plug-card
 entity: switch.smart_plug
 power_entity: sensor.smart_plug_power
 daily_consumption_entity: sensor.smart_plug_energy_daily
@@ -234,7 +249,7 @@ power_on_behavior_entity: select.smart_plug_power_on_behavior
 ### Plug Group Card
 
 ```yaml
-type: custom:plug-group-card
+type: custom:hac-plug-group-card
 entities:
   - switch.plug_1
   - switch.plug_2
@@ -275,7 +290,7 @@ show_timer: false
 ### Timer Card
 
 ```yaml
-type: custom:timer-card
+type: custom:hac-timer-card
 entity: fan.air_purifier
 ```
 
@@ -302,7 +317,7 @@ If auto-discovery doesn't find the right entity, you can override any sensor man
 #### Air Purifier Card
 
 ```yaml
-type: custom:air-purifier-card
+type: custom:hac-air-purifier-card
 entity: fan.air_purifier
 pm25_entity: sensor.air_purifier_pm25
 temperature_entity: sensor.air_purifier_temperature
@@ -319,7 +334,7 @@ buzzer_entity: switch.air_purifier_buzzer
 #### Plug Card
 
 ```yaml
-type: custom:plug-card
+type: custom:hac-plug-card
 entity: switch.smart_plug
 power_entity: sensor.smart_plug_power
 daily_consumption_entity: sensor.smart_plug_energy_daily

@@ -7,6 +7,7 @@ export default {
   output: {
     file: 'custom_components/ha_mushroom_cards/ha-mushroom-cards.js',
     format: 'es',
+    inlineDynamicImports: true,
   },
   plugins: [
     resolve(),

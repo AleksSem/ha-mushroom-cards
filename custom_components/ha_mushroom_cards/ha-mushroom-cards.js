@@ -16,7 +16,7 @@ function t(t,e,i,s){var o,n=arguments.length,r=n<3?e:null===s?s=Object.getOwnPro
     flex-direction: column;
     gap: var(--apc-spacing);
   }
-`,ft="air-purifier-card",yt="air-purifier-card-editor",vt=r`
+`,ft="hac-air-purifier-card",yt="hac-air-purifier-card-editor",vt=r`
   .timer-control {
     display: flex;
     align-items: center;
@@ -164,7 +164,7 @@ function t(t,e,i,s){var o,n=arguments.length,r=n<3?e:null===s?s=Object.getOwnPro
     justify-content: center;
   }
 
-`];function wt(t,e){if(!t.entities)return[];const i=t.entities[e];if(!i?.device_id)return[];const s=i.device_id;return Object.values(t.entities).filter(t=>t.device_id===s).map(t=>t.entity_id)}function xt(t,e,i,s){const o=i.endsWith(".")?i:i+".",n=e.filter(e=>e.startsWith(o)&&t.states[e]);if(0===n.length)return;if(!s)return n[0];const{deviceClass:r,keywords:a}=s,c=e=>!!r&&t.states[e]?.attributes.device_class===r,l=t=>!(!a||0===a.length)&&a.some(e=>t.includes(e)),h=n.find(t=>c(t)&&l(t));if(h)return h;const d=n.find(t=>c(t));if(d)return d;const u=n.find(t=>l(t));return u||void 0}function kt(t){return t.attributes.preset_mode}function Ct(t,e){const i=function(t,e){if(!e)return;const i=t.states[e];return i&&"unavailable"!==i.state&&"unknown"!==i.state?i.state:void 0}(t,e);if(void 0===i)return;const s=parseFloat(i);return isNaN(s)?void 0:s}function St(t){const e=window;e.customCards=e.customCards||[],e.customCards.push(t)}function Et(t,e,i,s,o){t.callService(e,i,{entity_id:s,...o})}function At(t,e){Et(t,e.split(".")[0],"toggle",e)}function Ot(t,e,i){Et(t,e.split(".")[0],"turn_on",e,i)}function zt(t,e,i,s,o){if(0===i.length)return q;const n=i=>{o||Ot(t,e),function(t,e,i){Et(t,"fan","set_preset_mode",e,{preset_mode:i})}(t,e,i)};return B`
+`];function wt(t,e){if(!t.entities)return[];const i=t.entities[e];if(!i?.device_id)return[];const s=i.device_id;return Object.values(t.entities).filter(t=>t.device_id===s).map(t=>t.entity_id)}function xt(t,e,i,s){const o=i.endsWith(".")?i:i+".",n=e.filter(e=>e.startsWith(o)&&t.states[e]);if(0===n.length)return;if(!s)return n[0];const{deviceClass:r,keywords:a}=s,c=e=>!!r&&t.states[e]?.attributes.device_class===r,l=t=>!(!a||0===a.length)&&a.some(e=>t.includes(e)),h=n.find(t=>c(t)&&l(t));if(h)return h;const d=n.find(t=>c(t));if(d)return d;const u=n.find(t=>l(t));return u||void 0}function kt(t){return t.attributes.preset_mode}function Ct(t,e){const i=function(t,e){if(!e)return;const i=t.states[e];return i&&"unavailable"!==i.state&&"unknown"!==i.state?i.state:void 0}(t,e);if(void 0===i)return;const s=parseFloat(i);return isNaN(s)?void 0:s}function St(t){const e=window;e.customCards=e.customCards||[],e.customCards.some(e=>e.type===t.type)||e.customCards.push(t)}function Et(t,e,i,s,o){t.callService(e,i,{entity_id:s,...o})}function At(t,e){Et(t,e.split(".")[0],"toggle",e)}function Ot(t,e,i){Et(t,e.split(".")[0],"turn_on",e,i)}function zt(t,e,i,s,o){if(0===i.length)return q;const n=i=>{o||Ot(t,e),function(t,e,i){Et(t,"fan","set_preset_mode",e,{preset_mode:i})}(t,e,i)};return B`
     <div class="toolbar">
       ${i.map(t=>{const e=s?.toLowerCase()===t.toLowerCase();return B`
           <button
@@ -890,7 +890,7 @@ function t(t,e,i,s){var o,n=arguments.length,r=n<3?e:null===s?s=Object.getOwnPro
           `:q}
         ${this._config.show_timer?Ht(this._schedules,()=>{this._timerDialogOpen=!0}):q}
       </div>
-    `}};te.styles=[gt,$t],t([ut({attribute:!1})],te.prototype,"hass",void 0),t([pt()],te.prototype,"_config",void 0),t([pt()],te.prototype,"_timerDialogOpen",void 0),t([pt()],te.prototype,"_schedules",void 0),te=t([lt(ft)],te);const ee="light-card",ie="light-card-editor",se=[vt,bt,r`
+    `}};te.styles=[gt,$t],t([ut({attribute:!1})],te.prototype,"hass",void 0),t([pt()],te.prototype,"_config",void 0),t([pt()],te.prototype,"_timerDialogOpen",void 0),t([pt()],te.prototype,"_schedules",void 0),te=t([lt(ft)],te);const ee="hac-light-card",ie="hac-light-card-editor",se=[vt,bt,r`
   /* Header */
   .header {
     display: flex;
@@ -1056,7 +1056,7 @@ function t(t,e,i,s){var o,n=arguments.length,r=n<3?e:null===s?s=Object.getOwnPro
   `}(this.hass,e,re(t)):q}
       ${!1!==this._config.show_color_temp_control&&function(t){return oe(t).includes("color_temp")}(t)?this._renderColorTemp(t,e):q}
       ${!1!==this._config.show_color_control&&function(t){const e=["hs","xy","rgb","rgbw","rgbww"];return oe(t).some(t=>e.includes(t))}(t)?he(this.hass,e,function(t){return t.attributes.hs_color}(t)?.[0]??0):q}
-    `}_renderColorTemp(t,e){const{min:i,max:s}=function(t){return{min:t.attributes.min_color_temp_kelvin??2e3,max:t.attributes.max_color_temp_kelvin??6500}}(t);return le(this.hass,e,function(t){return t.attributes.color_temp_kelvin??4e3}(t),i,s)}};_e.styles=[gt,se],t([ut({attribute:!1})],_e.prototype,"hass",void 0),t([pt()],_e.prototype,"_config",void 0),t([pt()],_e.prototype,"_timerDialogOpen",void 0),t([pt()],_e.prototype,"_schedules",void 0),_e=t([lt(ee)],_e);const me="plug-card",ge="plug-card-editor",fe=[vt,bt,r`
+    `}_renderColorTemp(t,e){const{min:i,max:s}=function(t){return{min:t.attributes.min_color_temp_kelvin??2e3,max:t.attributes.max_color_temp_kelvin??6500}}(t);return le(this.hass,e,function(t){return t.attributes.color_temp_kelvin??4e3}(t),i,s)}};_e.styles=[gt,se],t([ut({attribute:!1})],_e.prototype,"hass",void 0),t([pt()],_e.prototype,"_config",void 0),t([pt()],_e.prototype,"_timerDialogOpen",void 0),t([pt()],_e.prototype,"_schedules",void 0),_e=t([lt(ee)],_e);const me="hac-plug-card",ge="hac-plug-card-editor",fe=[vt,bt,r`
   /* Header */
   .header {
     display: flex;
@@ -1222,7 +1222,7 @@ function t(t,e,i,s){var o,n=arguments.length,r=n<3?e:null===s?s=Object.getOwnPro
           `:q}
         ${this._config.show_timer?Ht(this._schedules,()=>{this._timerDialogOpen=!0}):q}
       </div>
-    `}};xe.styles=[gt,fe],t([ut({attribute:!1})],xe.prototype,"hass",void 0),t([pt()],xe.prototype,"_config",void 0),t([pt()],xe.prototype,"_timerDialogOpen",void 0),t([pt()],xe.prototype,"_schedules",void 0),xe=t([lt(me)],xe);const ke="plug-group-card",Ce="plug-group-card-editor",Se=[vt,bt,r`
+    `}};xe.styles=[gt,fe],t([ut({attribute:!1})],xe.prototype,"hass",void 0),t([pt()],xe.prototype,"_config",void 0),t([pt()],xe.prototype,"_timerDialogOpen",void 0),t([pt()],xe.prototype,"_schedules",void 0),xe=t([lt(me)],xe);const ke="hac-plug-group-card",Ce="hac-plug-group-card-editor",Se=[vt,bt,r`
   /* Header */
   .header {
     display: flex;
@@ -1605,4 +1605,4 @@ function t(t,e,i,s){var o,n=arguments.length,r=n<3?e:null===s?s=Object.getOwnPro
               </div>
             `}
       </div>
-    `}};je.styles=[gt,De],t([ut({attribute:!1})],je.prototype,"hass",void 0),t([pt()],je.prototype,"_config",void 0),t([pt()],je.prototype,"_schedules",void 0),je=t([lt(Ue)],je);console.info("%c HA-CARDS %c v1.0.0 ","color: white; background: #555; font-weight: bold; padding: 2px 6px; border-radius: 4px 0 0 4px;","color: white; background: #1976d2; font-weight: bold; padding: 2px 6px; border-radius: 0 4px 4px 0;");
+    `}};je.styles=[gt,De],t([ut({attribute:!1})],je.prototype,"hass",void 0),t([pt()],je.prototype,"_config",void 0),t([pt()],je.prototype,"_schedules",void 0),je=t([lt(Ue)],je),console.info("%c HA-CARDS %c v1.0.0 ","color: white; background: #555; font-weight: bold; padding: 2px 6px; border-radius: 4px 0 0 4px;","color: white; background: #1976d2; font-weight: bold; padding: 2px 6px; border-radius: 0 4px 4px 0;");
