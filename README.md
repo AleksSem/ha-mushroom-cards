@@ -49,6 +49,19 @@ A card for controlling smart plugs/sockets with support for:
 - Device-based entity auto-discovery with manual override support
 - Multi-language support (English, Russian)
 
+### Plug Group Card
+
+A group card for controlling multiple smart plugs together:
+
+- Master toggle (all on/off)
+- Aggregated power and consumption stats (summed across all plugs)
+- Individual plug list with per-plug toggles
+- Group child lock toggle
+- Timer integration (schedule all on/off via Python backend scheduler)
+- Device-based entity auto-discovery per plug
+- Compact view mode
+- Multi-language support (English, Russian)
+
 ### Timer Card
 
 A standalone card for scheduling on/off timers for any entity:
@@ -197,6 +210,47 @@ child_lock_entity: switch.smart_plug_child_lock
 power_on_behavior_entity: select.smart_plug_power_on_behavior
 ```
 
+### Plug Group Card
+
+```yaml
+type: custom:plug-group-card
+entities:
+  - switch.plug_1
+  - switch.plug_2
+  - switch.plug_3
+name: Smart Plugs
+show_name: true
+show_state: true
+show_power: true
+show_daily_consumption: true
+show_monthly_consumption: true
+show_yearly_consumption: true
+show_settings: true
+show_individual: true
+icon_animation: true
+compact_view: false
+show_timer: false
+```
+
+#### Options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `entities` | string[] | **Required** | List of smart plug `switch` entity IDs |
+| `name` | string | `"Plug Group"` | Card title |
+| `show_name` | boolean | `true` | Show card name |
+| `show_state` | boolean | `true` | Show current state (count of active plugs) |
+| `show_power` | boolean | `true` | Show aggregated real-time power consumption |
+| `show_daily_consumption` | boolean | `true` | Show aggregated daily energy stats |
+| `show_monthly_consumption` | boolean | `true` | Show aggregated monthly energy stats |
+| `show_yearly_consumption` | boolean | `true` | Show aggregated yearly energy stats |
+| `show_settings` | boolean | `true` | Show group child lock toggle |
+| `show_individual` | boolean | `true` | Show individual plug list with per-plug toggles |
+| `icon_animation` | boolean | `true` | Animate icon when active |
+| `compact_view` | boolean | `false` | Compact card layout |
+| `show_timer` | boolean | `false` | Show timer button for scheduling on/off |
+| `timer_default_action` | string | `turn_off` | Default timer action (turn_off, turn_on, toggle) |
+
 ### Timer Card
 
 ```yaml
@@ -302,6 +356,14 @@ src/
 │   │   ├── controls/      # UI controls (power, stats, settings, power-on behavior)
 │   │   ├── plug-card.ts
 │   │   ├── plug-card-editor.ts
+│   │   ├── const.ts
+│   │   ├── styles.ts
+│   │   ├── types.ts
+│   │   └── utils.ts
+│   ├── plug-group-card/
+│   │   ├── controls/      # UI controls (aggregated stats, plug list, group settings)
+│   │   ├── plug-group-card.ts
+│   │   ├── plug-group-card-editor.ts
 │   │   ├── const.ts
 │   │   ├── styles.ts
 │   │   ├── types.ts

@@ -66,6 +66,12 @@ const ru: Record<string, string> = {
   'editor.monthly_consumption_entity': 'Потребление за месяц',
   'editor.yearly_consumption_entity': 'Потребление за год',
   'editor.power_on_behavior_entity': 'Поведение при включении',
+  // Plug Group Card
+  'plug-group.card.name': 'Группа розеток',
+  'plug-group.card.description': 'Карточка для группы розеток',
+  'editor.entities': 'Устройства',
+  'editor.show_individual': 'Отдельные розетки',
+  'editor.device_controls': 'Управление устройствами',
   // Timer
   'timer.card.name': 'Таймер',
   'timer.card.description': 'Таймеры включения/выключения устройств',

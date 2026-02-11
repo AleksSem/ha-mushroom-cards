@@ -66,6 +66,12 @@ const en: Record<string, string> = {
   'editor.monthly_consumption_entity': 'Monthly Consumption',
   'editor.yearly_consumption_entity': 'Yearly Consumption',
   'editor.power_on_behavior_entity': 'Power-On Behavior Entity',
+  // Plug Group Card
+  'plug-group.card.name': 'Plug Group',
+  'plug-group.card.description': 'Group card for multiple smart plugs',
+  'editor.entities': 'Entities',
+  'editor.show_individual': 'Show Individual',
+  'editor.device_controls': 'Device Controls',
   // Timer
   'timer.card.name': 'Timer',
   'timer.card.description': 'Schedule on/off timers for any entity',

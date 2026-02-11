@@ -7,6 +7,9 @@ import './cards/light-card/light-card';
 // Plug Card
 import './cards/plug-card/plug-card';
 
+// Plug Group Card
+import './cards/plug-group-card/plug-group-card';
+
 // Timer Card
 import './cards/timer-card/timer-card';
 
