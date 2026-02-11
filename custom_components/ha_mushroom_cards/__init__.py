@@ -18,25 +18,13 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     """Set up HA Mushroom Cards component."""
-    return True
-
-
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up HA Mushroom Cards from a config entry."""
     hass.data.setdefault(DOMAIN, {})
 
-    # Initialize scheduler
-    scheduler = HacScheduler(hass)
-    hass.data[DOMAIN]["scheduler"] = scheduler
-    await scheduler.async_load()
+    if hass.data[DOMAIN].get("frontend_registered"):
+        return True
 
-    # Register WebSocket API
-    async_register_websocket_api(hass)
-
-    # Register frontend resources
     integration_path = os.path.dirname(__file__)
     js_path = os.path.join(integration_path, "ha-mushroom-cards.js")
-
     url = "/local/ha-mushroom-cards/ha-mushroom-cards.js"
 
     file_hash = ""
@@ -53,7 +41,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     cache_param = f"?v={file_hash}" if file_hash else ""
     add_extra_js_url(hass, f"{url}{cache_param}")
 
+    hass.data[DOMAIN]["frontend_registered"] = True
     _LOGGER.info("HA Mushroom Cards frontend resource registered")
+    return True
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Set up HA Mushroom Cards from a config entry."""
+    hass.data.setdefault(DOMAIN, {})
+
+    scheduler = HacScheduler(hass)
+    hass.data[DOMAIN]["scheduler"] = scheduler
+    await scheduler.async_load()
+
+    async_register_websocket_api(hass)
     return True
 
 

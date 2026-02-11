@@ -2,6 +2,27 @@
 
 Additional custom Lovelace cards for [Mushroom](https://github.com/piitaya/lovelace-mushroom) and Home Assistant.
 
+## Table of Contents
+
+- [Cards](#cards)
+  - [Air Purifier Card](#air-purifier-card)
+  - [Light Card](#light-card)
+  - [Plug Card](#plug-card)
+  - [Plug Group Card](#plug-group-card)
+  - [Timer Card](#timer-card)
+- [Installation](#installation)
+- [Configuration](#configuration)
+  - [Air Purifier Card](#air-purifier-card-1)
+  - [Light Card](#light-card-1)
+  - [Plug Card](#plug-card-1)
+  - [Plug Group Card](#plug-group-card-1)
+  - [Timer Card](#timer-card-1)
+  - [Entity Overrides](#entity-overrides)
+  - [AQI Color Coding](#aqi-color-coding)
+- [Development](#development)
+- [Project Structure](#project-structure)
+- [Support](#support)
+
 ## Cards
 
 ### Air Purifier Card
@@ -353,7 +374,7 @@ src/
 │   │   ├── types.ts
 │   │   └── utils.ts
 │   ├── plug-card/
-│   │   ├── controls/      # UI controls (power, stats, settings, power-on behavior)
+│   │   ├── controls/      # UI controls (power, stats, settings)
 │   │   ├── plug-card.ts
 │   │   ├── plug-card-editor.ts
 │   │   ├── const.ts
@@ -408,3 +429,9 @@ src/
 ├── localize.ts
 └── types.ts
 ```
+
+## Support
+
+If you'd like to support me or buy me a coffee:
+
+[![Donate with PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate/?business=96G47VVQMMLFW&no_recurring=0&currency_code=EUR)
