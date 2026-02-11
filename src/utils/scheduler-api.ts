@@ -147,7 +147,7 @@ class SchedulerManager {
   }
 
   getSchedulesForEntity(entityId: string): Schedule[] {
-    return this._schedules.get(entityId) || [];
+    return [...(this._schedules.get(entityId) || [])];
   }
 
   subscribe(callback: ScheduleCallback): () => void {

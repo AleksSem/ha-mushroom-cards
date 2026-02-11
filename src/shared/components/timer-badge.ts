@@ -60,6 +60,15 @@ export class TimerBadge extends LitElement {
     }
   }
 
+  private get _actionClass(): string {
+    switch (this.schedule?.action) {
+      case 'turn_on': return 'action-on';
+      case 'turn_off': return 'action-off';
+      case 'toggle': return 'action-toggle';
+      default: return '';
+    }
+  }
+
   private _cancel() {
     this.dispatchEvent(
       new CustomEvent('timer-cancel', {
@@ -73,7 +82,7 @@ export class TimerBadge extends LitElement {
   render() {
     if (this.compact) {
       return html`
-        <span class="badge compact" @click=${this._cancel}>
+        <span class="badge compact ${this._actionClass}" @click=${this._cancel}>
           <ha-icon icon="mdi:timer-outline"></ha-icon>
           ${this._remaining}
         </span>
@@ -81,7 +90,7 @@ export class TimerBadge extends LitElement {
     }
 
     return html`
-      <span class="badge" @click=${this._cancel}>
+      <span class="badge ${this._actionClass}" @click=${this._cancel}>
         <ha-icon icon="mdi:timer-outline"></ha-icon>
         ${this._remaining}
       </span>
@@ -112,6 +121,9 @@ export class TimerBadge extends LitElement {
     .badge ha-icon {
       --mdc-icon-size: 14px;
     }
+    .action-on { background: #4caf50; }
+    .action-off { background: #f44336; }
+    .action-toggle { background: #ff9800; }
     .compact {
       padding: 2px 8px;
       font-size: 11px;

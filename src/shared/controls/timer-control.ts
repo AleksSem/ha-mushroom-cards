@@ -8,20 +8,16 @@ export function renderTimerButton(
   onOpenDialog: () => void,
 ): TemplateResult {
   const hasActive = activeSchedules.length > 0;
-  const firstSchedule = activeSchedules[0];
 
   return html`
     <div class="timer-control">
       <button class="timer-btn ${hasActive ? 'active' : ''}" @click=${onOpenDialog}>
         <ha-icon icon="mdi:timer-outline"></ha-icon>
       </button>
-      ${hasActive && firstSchedule
-        ? html`
-            <hac-timer-badge
-              .schedule=${firstSchedule}
-              compact
-            ></hac-timer-badge>
-          `
+      ${hasActive
+        ? activeSchedules.map(
+            (s) => html`<hac-timer-badge .schedule=${s} compact></hac-timer-badge>`,
+          )
         : nothing}
     </div>
   `;

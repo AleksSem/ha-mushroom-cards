@@ -69,7 +69,7 @@ A standalone card for scheduling on/off timers for any entity:
 - Preset durations (configurable)
 - Custom duration and specific time modes
 - Configurable action (turn_off, turn_on, toggle, custom service)
-- Active timer badge with countdown
+- Active timer badge with countdown, color-coded by action (green for on, red for off, amber for toggle)
 - Multi-language support (English, Russian)
 
 ## Installation
