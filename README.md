@@ -22,7 +22,6 @@ Additional custom Lovelace cards for [Mushroom](https://github.com/piitaya/lovel
   - [Entity Overrides](#entity-overrides)
   - [AQI Color Coding](#aqi-color-coding)
 - [Development](#development)
-- [Project Structure](#project-structure)
 - [Support](#support)
 
 ## Cards
@@ -44,6 +43,8 @@ A card for controlling Xiaomi air purifiers with support for:
 - Timer integration (schedule on/off via Python backend scheduler)
 - Multi-language support (English, Russian)
 
+<img src="images/air_purifier.png" width="300" />
+
 ### Light Card
 
 A card for controlling smart lights with support for:
@@ -58,6 +59,8 @@ A card for controlling smart lights with support for:
 - Timer integration (schedule on/off via Python backend scheduler)
 - Multi-language support (English, Russian)
 
+<img src="images/light.png" width="300" />
+
 ### Plug Card
 
 A card for controlling smart plugs/sockets with support for:
@@ -71,6 +74,9 @@ A card for controlling smart plugs/sockets with support for:
 - Timer integration (schedule on/off via Python backend scheduler)
 - Device-based entity auto-discovery with manual override support
 - Multi-language support (English, Russian)
+
+<img src="images/plug_1.png" width="300" /><br>
+<img src="images/plug_2.png" width="300" />
 
 ### Plug Group Card
 
@@ -95,6 +101,8 @@ A standalone card for scheduling on/off timers for any entity:
 - Active timer badge: countdown for one-shot timers, day+time for recurring (e.g. "MO 16:10" for specific days, "16:10" for daily), color-coded by action (green for on, red for off, amber for toggle)
 - Recurring day-of-week timers (select days, auto-repeats weekly); time mode without day selection creates a daily recurring timer
 - Multi-language support (English, Russian)
+
+<img src="images/timer_card.png" width="300" />
 
 ## Installation
 
@@ -367,84 +375,6 @@ npm run watch  # rebuild on changes
 ```
 
 The build output goes to `custom_components/ha_mushroom_cards/ha-mushroom-cards.js`.
-
-## Project Structure
-
-```
-src/
-├── cards/
-│   ├── air-purifier-card/
-│   │   ├── controls/      # UI controls (power, preset, stats, filter, settings, favorite level)
-│   │   ├── air-purifier-card.ts
-│   │   ├── air-purifier-card-editor.ts
-│   │   ├── const.ts
-│   │   ├── styles.ts
-│   │   ├── types.ts
-│   │   └── utils.ts
-│   ├── light-card/
-│   │   ├── controls/      # UI controls (power, brightness, color temp, color)
-│   │   ├── light-card.ts
-│   │   ├── light-card-editor.ts
-│   │   ├── const.ts
-│   │   ├── styles.ts
-│   │   ├── types.ts
-│   │   └── utils.ts
-│   ├── plug-card/
-│   │   ├── controls/      # UI controls (power, stats, settings)
-│   │   ├── plug-card.ts
-│   │   ├── plug-card-editor.ts
-│   │   ├── const.ts
-│   │   ├── styles.ts
-│   │   ├── types.ts
-│   │   └── utils.ts
-│   ├── plug-group-card/
-│   │   ├── controls/      # UI controls (aggregated stats, plug list, group settings)
-│   │   ├── plug-group-card.ts
-│   │   ├── plug-group-card-editor.ts
-│   │   ├── const.ts
-│   │   ├── styles.ts
-│   │   ├── types.ts
-│   │   └── utils.ts
-│   └── timer-card/
-│       ├── timer-card.ts
-│       ├── timer-card-editor.ts
-│       ├── const.ts
-│       ├── styles.ts
-│       └── types.ts
-├── shared/
-│   ├── components/        # Reusable UI components (hac-* prefix)
-│   │   ├── gradient-slider.ts
-│   │   ├── progress-bar.ts
-│   │   ├── shape-icon.ts
-│   │   ├── slider.ts
-│   │   ├── state-info.ts
-│   │   ├── state-item.ts
-│   │   ├── timer-badge.ts
-│   │   ├── timer-dialog.ts
-│   │   ├── timer-picker.ts
-│   │   └── toggle-button.ts
-│   ├── controls/          # Shared render functions used across cards
-│   │   └── timer-control.ts
-│   └── styles/
-│       ├── animations.ts
-│       ├── card-styles.ts
-│       ├── editor-styles.ts
-│       ├── not-found-styles.ts
-│       └── timer-styles.ts
-├── translations/          # i18n (en, ru)
-├── utils/
-│   ├── base-element.ts
-│   ├── colors.ts
-│   ├── editor-helpers.ts
-│   ├── entity.ts
-│   ├── ha-helper.ts
-│   ├── register-card.ts
-│   ├── scheduler-api.ts
-│   └── timer-utils.ts
-├── ha-cards.ts            # Entry point
-├── localize.ts
-└── types.ts
-```
 
 ## Support
 
