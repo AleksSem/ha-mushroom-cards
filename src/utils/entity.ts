@@ -8,7 +8,7 @@ export function extractPrefix(entityId: string): string {
   return parts.slice(0, -2).join('_');
 }
 
-function findEntity(hass: HomeAssistant, prefix: string, patterns: string[]): string | undefined {
+export function findEntity(hass: HomeAssistant, prefix: string, patterns: string[]): string | undefined {
   for (const pattern of patterns) {
     const entityId = pattern.replace('{prefix}', prefix);
     if (hass.states[entityId]) {
