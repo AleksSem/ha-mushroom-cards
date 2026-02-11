@@ -40,6 +40,8 @@ export interface Schedule {
   created_at: string;
   status: string;
   duration?: number | null;
+  recurring?: boolean;
+  days_of_week?: number[] | null;
 }
 
 export interface LovelaceCardConfig {

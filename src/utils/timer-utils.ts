@@ -16,7 +16,7 @@ export function getActionLabel(action: string, lang: string): string {
 
 export function buildScheduleParams(
   entityId: string,
-  detail: { action: string; duration?: number; time?: string },
+  detail: { action: string; duration?: number; time?: string; days_of_week?: number[] },
 ): CreateScheduleParams {
   const params: CreateScheduleParams = {
     target_entity: entityId,
@@ -27,12 +27,15 @@ export function buildScheduleParams(
   } else if (detail.time) {
     params.time = detail.time;
   }
+  if (detail.days_of_week?.length) {
+    params.days_of_week = detail.days_of_week;
+  }
   return params;
 }
 
 export function buildGroupScheduleParams(
   entityIds: string[],
-  detail: { action: string; duration?: number; time?: string },
+  detail: { action: string; duration?: number; time?: string; days_of_week?: number[] },
 ): CreateScheduleParams {
   const domain = entityIds[0].split('.')[0];
   const params: CreateScheduleParams = {
@@ -45,6 +48,9 @@ export function buildGroupScheduleParams(
     params.duration = detail.duration;
   } else if (detail.time) {
     params.time = detail.time;
+  }
+  if (detail.days_of_week?.length) {
+    params.days_of_week = detail.days_of_week;
   }
   return params;
 }

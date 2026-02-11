@@ -87,4 +87,15 @@ export const timerCardStyles = [notFoundStyles, css`
     padding: 8px;
   }
 
+  .recurring-icon {
+    --mdc-icon-size: 20px;
+    color: var(--primary-color);
+    flex-shrink: 0;
+  }
+  .recurring-info {
+    font-size: 13px;
+    color: var(--primary-text-color);
+    white-space: nowrap;
+  }
+
 `];

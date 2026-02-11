@@ -16,6 +16,7 @@ export class TimerPicker extends LitElement {
   @state() private _minutes = 10;
   @state() private _timeValue = '';
   @state() private _selectedAction = 'turn_off';
+  @state() private _selectedDays: number[] = [];
 
   connectedCallback() {
     super.connectedCallback();
@@ -33,6 +34,17 @@ export class TimerPicker extends LitElement {
 
   private _setMode(mode: 'duration' | 'time') {
     this._mode = mode;
+    if (mode === 'duration') {
+      this._selectedDays = [];
+    }
+  }
+
+  private _toggleDay(day: number) {
+    if (this._selectedDays.includes(day)) {
+      this._selectedDays = this._selectedDays.filter((d) => d !== day);
+    } else {
+      this._selectedDays = [...this._selectedDays, day].sort();
+    }
   }
 
   private _selectPreset(seconds: number) {
@@ -75,9 +87,13 @@ export class TimerPicker extends LitElement {
       );
     } else {
       if (!this._timeValue) return;
+      const detail: Record<string, any> = { time: this._timeValue, action: this._selectedAction };
+      if (this._selectedDays.length > 0) {
+        detail.days_of_week = this._selectedDays;
+      }
       this.dispatchEvent(
         new CustomEvent('timer-start', {
-          detail: { time: this._timeValue, action: this._selectedAction },
+          detail,
           bubbles: true,
           composed: true,
         }),
@@ -170,7 +186,13 @@ export class TimerPicker extends LitElement {
     `;
   }
 
+  private static DAY_KEYS = [
+    'timer.day_mon', 'timer.day_tue', 'timer.day_wed', 'timer.day_thu',
+    'timer.day_fri', 'timer.day_sat', 'timer.day_sun',
+  ];
+
   private _renderTime() {
+    const lang = this.lang;
     return html`
       <div class="time-input">
         <input
@@ -178,6 +200,14 @@ export class TimerPicker extends LitElement {
           .value=${this._timeValue}
           @change=${this._onTimeChange}
         />
+      </div>
+      <div class="day-chips">
+        ${TimerPicker.DAY_KEYS.map((key, i) => html`
+          <button
+            class="day-chip ${this._selectedDays.includes(i) ? 'selected' : ''}"
+            @click=${() => this._toggleDay(i)}
+          >${localize(key, lang)}</button>
+        `)}
       </div>
     `;
   }
@@ -292,6 +322,32 @@ export class TimerPicker extends LitElement {
       color: var(--primary-text-color);
       font-size: 13px;
       outline: none;
+    }
+    .day-chips {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+    .day-chip {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+      background: var(--secondary-background-color, rgba(111, 111, 111, 0.12));
+      color: var(--primary-text-color);
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .day-chip.selected {
+      background: var(--primary-color);
+      color: var(--text-primary-color, #fff);
+      border-color: var(--primary-color);
     }
     .start-btn {
       width: 100%;

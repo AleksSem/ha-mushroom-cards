@@ -10,10 +10,23 @@ import { registerCard } from '../../utils/register-card';
 import { toggleEntity } from '../../utils/ha-helper';
 import { schedulerManager } from '../../utils/scheduler-api';
 import { getActionLabel, buildScheduleParams } from '../../utils/timer-utils';
-
 import '../../shared/components/state-info';
 import '../../shared/components/timer-picker';
 import '../../shared/components/timer-badge';
+
+const DAY_KEYS = [
+  'timer.day_mon', 'timer.day_tue', 'timer.day_wed', 'timer.day_thu',
+  'timer.day_fri', 'timer.day_sat', 'timer.day_sun',
+];
+
+function formatDays(days: number[], lang: string): string {
+  return days.map((d) => localize(DAY_KEYS[d], lang)).join(', ');
+}
+
+function formatTimeFromISO(isoStr: string): string {
+  const d = new Date(isoStr);
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
 
 import './timer-card-editor';
 
@@ -171,8 +184,8 @@ export class TimerCard extends LitElement {
     stateStr: string,
     lang: string,
   ) {
-    const timerInfo =
-      this._schedules.length > 0 ? this._schedules[0] : null;
+    const oneShot = this._schedules.filter((s) => !s.recurring);
+    const timerInfo = oneShot.length > 0 ? oneShot[0] : null;
 
     let secondary = stateStr;
     if (timerInfo) {
@@ -212,13 +225,16 @@ export class TimerCard extends LitElement {
   }
 
   private _renderActiveTimers(lang: string) {
+    const oneShot = this._schedules.filter((s) => !s.recurring);
+    const recurring = this._schedules.filter((s) => s.recurring);
+
     return html`
       <div class="active-timers">
         <div class="active-timers-title">
           ${localize('timer.active', lang)}
         </div>
-        ${this._schedules.length > 0
-          ? this._schedules.map(
+        ${oneShot.length > 0
+          ? oneShot.map(
               (s) => html`
                 <div class="timer-item">
                   <hac-timer-badge .schedule=${s}></hac-timer-badge>
@@ -234,11 +250,36 @@ export class TimerCard extends LitElement {
                 </div>
               `,
             )
-          : html`
-              <div class="no-active">
-                ${localize('timer.no_active', lang)}
+          : recurring.length === 0
+            ? html`<div class="no-active">${localize('timer.no_active', lang)}</div>`
+            : nothing}
+        ${recurring.length > 0
+          ? html`
+              <div class="active-timers-title" style="margin-top: 8px;">
+                ${localize('timer.recurring', lang)}
               </div>
-            `}
+              ${recurring.map(
+                (s) => html`
+                  <div class="timer-item">
+                    <ha-icon class="recurring-icon" icon="mdi:calendar-clock"></ha-icon>
+                    <span class="recurring-info">
+                      ${s.days_of_week ? formatDays(s.days_of_week, lang) : ''}
+                      ${s.trigger_at ? formatTimeFromISO(s.trigger_at) : ''}
+                    </span>
+                    <span class="action-text">
+                      ${getActionLabel(s.action, lang)}
+                    </span>
+                    <button
+                      class="cancel-btn"
+                      @click=${() => this._cancelSchedule(s.id)}
+                    >
+                      <ha-icon icon="mdi:close"></ha-icon>
+                    </button>
+                  </div>
+                `,
+              )}
+            `
+          : nothing}
       </div>
     `;
   }

@@ -31,6 +31,8 @@ class Schedule:
     service_data: dict[str, Any] | None = None
     duration: int | None = None  # Original duration in seconds
     retry_count: int = 0
+    recurring: bool = False
+    days_of_week: list[int] | None = None  # 0=Mon..6=Sun
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -79,10 +81,16 @@ class HacScheduler:
 
             trigger_at = datetime.fromisoformat(schedule.trigger_at)
             if trigger_at <= now:
-                # Already past — trigger immediately
-                expired += 1
-                self._schedules[schedule.id] = schedule
-                self._hass.async_create_task(self._async_trigger(schedule.id))
+                if schedule.recurring and schedule.days_of_week:
+                    # Recurring: recalculate next valid trigger instead of firing immediately
+                    self._schedules[schedule.id] = schedule
+                    self._reschedule_recurring(schedule)
+                    loaded += 1
+                else:
+                    # One-shot: already past — trigger immediately
+                    expired += 1
+                    self._schedules[schedule.id] = schedule
+                    self._hass.async_create_task(self._async_trigger(schedule.id))
             else:
                 self._schedules[schedule.id] = schedule
                 self._register_timer(schedule)
@@ -118,14 +126,25 @@ class HacScheduler:
             except ValueError:
                 raise ValueError(f"Invalid time format '{time_str}', expected HH:MM")
             local_now = dt_util.now()
-            target = local_now.replace(hour=hour, minute=minute, second=0, microsecond=0)
-            if target <= local_now:
-                target += timedelta(days=1)
+            days_of_week = data.get("days_of_week")
+            if days_of_week:
+                # Find next matching weekday (0=Mon..6=Sun)
+                target = local_now.replace(hour=hour, minute=minute, second=0, microsecond=0)
+                for offset in range(8):  # 0..7 days ahead
+                    candidate = target + timedelta(days=offset)
+                    if candidate.weekday() in days_of_week and candidate > local_now:
+                        target = candidate
+                        break
+            else:
+                target = local_now.replace(hour=hour, minute=minute, second=0, microsecond=0)
+                if target <= local_now:
+                    target += timedelta(days=1)
             trigger_at = dt_util.as_utc(target)
             duration = int((trigger_at - now).total_seconds())
         else:
             raise ValueError("Either 'duration' or 'time' must be provided")
 
+        days_of_week = data.get("days_of_week")
         schedule = Schedule(
             id=str(uuid.uuid4()),
             target_entity=data["target_entity"],
@@ -136,6 +155,8 @@ class HacScheduler:
             created_at=now.isoformat(),
             status="active",
             duration=duration,
+            recurring=bool(days_of_week),
+            days_of_week=days_of_week,
         )
 
         self._schedules[schedule.id] = schedule
@@ -287,10 +308,44 @@ class HacScheduler:
                 )
                 return
             else:
+                # For recurring schedules, reschedule even after max retries
+                if schedule.recurring and schedule.days_of_week:
+                    self._reschedule_recurring(schedule)
+                    await self._async_save()
+                    self._notify_subscribers("updated", schedule)
+                    return
                 schedule.status = "failed"
+
+        # Reschedule recurring timers to next matching day
+        if schedule.recurring and schedule.days_of_week:
+            self._reschedule_recurring(schedule)
+            await self._async_save()
+            self._notify_subscribers("updated", schedule)
+            return
 
         await self._async_save()
         self._notify_subscribers("triggered", schedule)
+
+    def _reschedule_recurring(self, schedule: Schedule) -> None:
+        """Reschedule a recurring timer to the next matching weekday."""
+        trigger_at = datetime.fromisoformat(schedule.trigger_at)
+        if trigger_at.tzinfo is None:
+            trigger_at = trigger_at.replace(tzinfo=dt_util.UTC)
+        local_trigger = dt_util.as_local(trigger_at)
+        for offset in range(1, 8):
+            candidate = local_trigger + timedelta(days=offset)
+            if candidate.weekday() in schedule.days_of_week:
+                next_trigger = dt_util.as_utc(candidate)
+                schedule.trigger_at = next_trigger.isoformat()
+                schedule.status = "active"
+                schedule.retry_count = 0
+                self._register_timer(schedule)
+                _LOGGER.info(
+                    "[hac_scheduler] Recurring schedule %s rescheduled to %s",
+                    schedule.id[:8],
+                    schedule.trigger_at,
+                )
+                return
 
     async def _async_save(self) -> None:
         """Persist all schedules to .storage/hac_scheduler."""

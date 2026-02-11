@@ -36,6 +36,7 @@ def async_register_websocket_api(hass: HomeAssistant) -> None:
         vol.Optional("service_data"): dict,
         vol.Optional("duration"): int,
         vol.Optional("time"): str,
+        vol.Optional("days_of_week"): [int],
     }
 )
 @websocket_api.async_response
@@ -52,6 +53,7 @@ async def ws_create_schedule(hass, connection, msg):
                 "service_data": msg.get("service_data"),
                 "duration": msg.get("duration"),
                 "time": msg.get("time"),
+                "days_of_week": msg.get("days_of_week"),
             }
         )
         connection.send_result(

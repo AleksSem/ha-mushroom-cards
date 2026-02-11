@@ -7,6 +7,7 @@ export interface CreateScheduleParams {
   service_data?: Record<string, any>;
   duration?: number;
   time?: string;
+  days_of_week?: number[];
 }
 
 type ScheduleCallback = (schedules: Schedule[]) => void;
@@ -126,6 +127,8 @@ class SchedulerManager {
         duration: params.duration,
         service: params.service,
         service_data: params.service_data,
+        recurring: params.days_of_week ? true : undefined,
+        days_of_week: params.days_of_week,
       };
     } catch (e) {
       console.error('[hac-scheduler] Failed to create schedule:', e);
