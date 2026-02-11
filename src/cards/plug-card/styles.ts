@@ -42,49 +42,6 @@ export const plugCardStyles = [timerControlStyles, notFoundStyles, css`
     letter-spacing: 0.5px;
   }
 
-  /* Power-on behavior toolbar */
-  .toolbar-section {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .toolbar-label {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--secondary-text-color);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .toolbar {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-  .toolbar button {
-    flex: 1;
-    min-width: 0;
-    padding: 8px 6px;
-    border: none;
-    border-radius: 12px;
-    background: var(--secondary-background-color, rgba(111, 111, 111, 0.12));
-    color: var(--primary-text-color);
-    font-size: 11px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    outline: none;
-  }
-  .toolbar button.active {
-    background: var(--state-fan-active-color, var(--primary-color));
-    color: var(--text-primary-color, #fff);
-  }
-  .toolbar button:hover {
-    opacity: 0.8;
-  }
-
   /* Settings row */
   .settings-row {
     display: flex;

@@ -6,6 +6,7 @@ import { EDITOR_TAG } from './const';
 import { localize } from '../../localize';
 import { editorStyles } from '../../shared/styles/editor-styles';
 import { computeLabel, fireConfigChanged } from '../../utils/editor-helpers';
+import { resolveEntities } from './utils';
 
 const MAIN_SCHEMA = [
   { name: 'entity', required: true, selector: { entity: { domain: 'switch' } } },
@@ -16,8 +17,10 @@ const MAIN_SCHEMA = [
     schema: [
       { name: 'show_name', selector: { boolean: {} } },
       { name: 'show_state', selector: { boolean: {} } },
-      { name: 'show_stats', selector: { boolean: {} } },
-      { name: 'show_power_on_behavior', selector: { boolean: {} } },
+      { name: 'show_power', selector: { boolean: {} } },
+      { name: 'show_daily_consumption', selector: { boolean: {} } },
+      { name: 'show_monthly_consumption', selector: { boolean: {} } },
+      { name: 'show_yearly_consumption', selector: { boolean: {} } },
       { name: 'show_settings', selector: { boolean: {} } },
       { name: 'icon_animation', selector: { boolean: {} } },
       { name: 'compact_view', selector: { boolean: {} } },
@@ -59,6 +62,26 @@ export class PlugCardEditor extends LitElement {
     this._expandedOverrides = !this._expandedOverrides;
   }
 
+  private _powerOnBehaviorChanged(ev: Event): void {
+    const select = ev.target as any;
+    const entityId = this._resolvedEntities.powerOnBehavior;
+    if (!entityId || !select.value) return;
+    this.hass.callService('select', 'select_option', {
+      entity_id: entityId,
+      option: select.value,
+    });
+  }
+
+  private _childLockChanged(): void {
+    const entityId = this._resolvedEntities.childLock;
+    if (!entityId) return;
+    this.hass.callService('switch', 'toggle', { entity_id: entityId });
+  }
+
+  private get _resolvedEntities(): ReturnType<typeof resolveEntities> {
+    return resolveEntities(this.hass, this._config);
+  }
+
   render() {
     if (!this.hass || !this._config) return nothing;
 
@@ -67,13 +90,27 @@ export class PlugCardEditor extends LitElement {
     const data = {
       show_name: true,
       show_state: true,
-      show_stats: true,
-      show_power_on_behavior: true,
+      show_power: true,
+      show_daily_consumption: true,
+      show_monthly_consumption: true,
+      show_yearly_consumption: true,
       show_settings: true,
       compact_view: false,
       icon_animation: true,
       ...this._config,
     };
+
+    const resolved = this._resolvedEntities;
+
+    const childLockEntityId = resolved.childLock;
+    const childLockOn = childLockEntityId
+      ? this.hass.states[childLockEntityId]?.state === 'on'
+      : false;
+
+    const powerOnEntityId = resolved.powerOnBehavior;
+    const powerOnEntity = powerOnEntityId ? this.hass.states[powerOnEntityId] : undefined;
+    const powerOnOptions = (powerOnEntity?.attributes.options as string[]) || [];
+    const powerOnValue = powerOnEntity?.state;
 
     return html`
       <ha-form
@@ -83,6 +120,25 @@ export class PlugCardEditor extends LitElement {
         .computeLabel=${this._computeLabel}
         @value-changed=${this._valueChanged}
       ></ha-form>
+
+      ${powerOnOptions.length > 0 ? html`
+        <ha-select
+          .label=${localize('editor.power_on_behavior', lang)}
+          .value=${powerOnValue}
+          @selected=${this._powerOnBehaviorChanged}
+        >
+          ${powerOnOptions.map(opt => html`<mwc-list-item .value=${opt}>${opt}</mwc-list-item>`)}
+        </ha-select>
+      ` : nothing}
+
+      ${childLockEntityId ? html`
+        <ha-formfield .label=${localize('settings.child_lock', lang)}>
+          <ha-switch
+            .checked=${childLockOn}
+            @change=${this._childLockChanged}
+          ></ha-switch>
+        </ha-formfield>
+      ` : nothing}
 
       <div class="overrides-section">
         <button class="overrides-toggle" @click=${this._toggleOverrides}>
@@ -103,6 +159,10 @@ export class PlugCardEditor extends LitElement {
   }
 
   static styles = [editorStyles, css`
+    ha-formfield {
+      display: block;
+      margin-top: 16px;
+    }
     .overrides-section {
       margin-top: 16px;
     }

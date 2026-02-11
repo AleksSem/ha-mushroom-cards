@@ -41,15 +41,3 @@ export function getEntityUnit(hass: HomeAssistant, entityId: string | undefined)
   return (entity?.attributes.unit_of_measurement as string) || '';
 }
 
-export function getPowerOnBehaviorOptions(hass: HomeAssistant, entityId: string | undefined): string[] {
-  if (!entityId) return [];
-  const entity = hass.states[entityId];
-  return (entity?.attributes.options as string[]) || [];
-}
-
-export function getActivePowerOnBehavior(hass: HomeAssistant, entityId: string | undefined): string | undefined {
-  if (!entityId) return undefined;
-  const entity = hass.states[entityId];
-  if (!entity || entity.state === 'unavailable' || entity.state === 'unknown') return undefined;
-  return entity.state;
-}

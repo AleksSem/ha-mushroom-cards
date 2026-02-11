@@ -42,8 +42,8 @@ A card for controlling smart plugs/sockets with support for:
 - Power on/off control with animated icon
 - Real-time power consumption (W)
 - Daily, monthly, yearly energy stats
-- Power-on behavior select (restore, off, on)
-- Child lock toggle
+- Child lock toggle (card view)
+- Editor includes power-on behavior select and child lock toggle (device controls)
 - Compact view mode
 - Timer integration (schedule on/off via Python backend scheduler)
 - Device-based entity auto-discovery with manual override support
@@ -156,8 +156,10 @@ entity: switch.smart_plug
 name: Smart Plug
 show_name: true
 show_state: true
-show_stats: true
-show_power_on_behavior: true
+show_power: true
+show_daily_consumption: true
+show_monthly_consumption: true
+show_yearly_consumption: true
 show_settings: true
 icon_animation: true
 compact_view: false
@@ -172,9 +174,11 @@ show_timer: false
 | `name` | string | Entity name | Card title |
 | `show_name` | boolean | `true` | Show card name |
 | `show_state` | boolean | `true` | Show current state |
-| `show_stats` | boolean | `true` | Show power consumption and energy stats |
-| `show_power_on_behavior` | boolean | `true` | Show power-on behavior select |
-| `show_settings` | boolean | `true` | Show child lock toggle |
+| `show_power` | boolean | `true` | Show real-time power consumption |
+| `show_daily_consumption` | boolean | `true` | Show daily energy stats |
+| `show_monthly_consumption` | boolean | `true` | Show monthly energy stats |
+| `show_yearly_consumption` | boolean | `true` | Show yearly energy stats |
+| `show_settings` | boolean | `true` | Show child lock toggle (card view) |
 | `icon_animation` | boolean | `true` | Animate icon when active |
 | `compact_view` | boolean | `false` | Compact card layout |
 | `show_timer` | boolean | `false` | Show timer button for scheduling on/off |

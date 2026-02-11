@@ -2,25 +2,30 @@ import { html, nothing, TemplateResult } from 'lit';
 import { HomeAssistant } from '../../../types';
 import { localize } from '../../../localize';
 import { getEntityNumericState, getEntityUnit, ResolvedEntities } from '../utils';
+import { PlugCardConfig } from '../types';
 
 interface StatItem {
   entityId: string | undefined;
   labelKey: string;
   decimals?: number;
+  configKey: keyof PlugCardConfig;
 }
 
 export function renderStatsRow(
   hass: HomeAssistant,
   entities: ResolvedEntities,
   lang: string,
+  config: PlugCardConfig,
 ): TemplateResult | typeof nothing {
   const stats: StatItem[] = [
-    { entityId: entities.power, labelKey: 'stats.power' },
-    { entityId: entities.dailyConsumption, labelKey: 'stats.daily', decimals: 2 },
-    { entityId: entities.monthlyConsumption, labelKey: 'stats.monthly', decimals: 2 },
+    { entityId: entities.power, labelKey: 'stats.power', configKey: 'show_power' },
+    { entityId: entities.dailyConsumption, labelKey: 'stats.daily', decimals: 2, configKey: 'show_daily_consumption' },
+    { entityId: entities.monthlyConsumption, labelKey: 'stats.monthly', decimals: 2, configKey: 'show_monthly_consumption' },
+    { entityId: entities.yearlyConsumption, labelKey: 'stats.yearly', decimals: 2, configKey: 'show_yearly_consumption' },
   ];
 
   const available = stats.filter(s => {
+    if (config[s.configKey] === false) return false;
     if (!s.entityId) return false;
     const val = getEntityNumericState(hass, s.entityId);
     return val !== undefined;

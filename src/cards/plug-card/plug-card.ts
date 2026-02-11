@@ -11,13 +11,10 @@ import {
   ResolvedEntities,
   isEntityOn,
   getEntityNumericState,
-  getPowerOnBehaviorOptions,
-  getActivePowerOnBehavior,
 } from './utils';
 import { registerCard } from '../../utils/register-card';
 import { renderPowerControl } from './controls/power-control';
 import { renderStatsRow } from './controls/stats-row';
-import { renderPowerOnBehavior } from './controls/power-on-behavior';
 import { renderSettingsRow } from './controls/settings-row';
 import { renderTimerButton, renderTimerDialog } from '../../shared/controls/timer-control';
 import { schedulerManager } from '../../utils/scheduler-api';
@@ -144,18 +141,12 @@ export class PlugCard extends LitElement {
     const lang = this._lang;
     const compact = this._config.compact_view;
 
-    const powerOnOptions = getPowerOnBehaviorOptions(this.hass, resolved.powerOnBehavior);
-    const activeBehavior = getActivePowerOnBehavior(this.hass, resolved.powerOnBehavior);
-
     return html`
       <ha-card>
         <div class="container">
           ${this._renderHeader(entity, active, name, lang, resolved)}
-          ${!compact && this._config.show_stats !== false
-            ? renderStatsRow(this.hass, resolved, lang)
-            : nothing}
-          ${!compact && this._config.show_power_on_behavior !== false
-            ? renderPowerOnBehavior(this.hass, resolved.powerOnBehavior, powerOnOptions, activeBehavior, lang)
+          ${!compact
+            ? renderStatsRow(this.hass, resolved, lang, this._config)
             : nothing}
           ${!compact && this._config.show_settings !== false
             ? renderSettingsRow(this.hass, resolved.childLock, lang)
