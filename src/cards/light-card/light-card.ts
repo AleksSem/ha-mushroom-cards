@@ -70,18 +70,7 @@ export class LightCard extends LitElement {
     if (!config.entity) {
       throw new Error('Entity is required');
     }
-    this._config = {
-      show_name: true,
-      show_state: true,
-      show_brightness_control: true,
-      show_color_temp_control: true,
-      show_color_control: true,
-      use_light_color: true,
-      icon_animation: true,
-      compact_view: false,
-      hide_controls_when_off: true,
-      ...config,
-    };
+    this._config = config;
   }
 
   getCardSize(): number {

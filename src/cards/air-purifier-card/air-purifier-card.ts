@@ -68,17 +68,7 @@ export class AirPurifierCard extends LitElement {
     if (!config.entity) {
       throw new Error('Entity is required');
     }
-    this._config = {
-      show_name: true,
-      show_state: true,
-      show_toolbar: true,
-      show_stats: true,
-      show_settings: true,
-      show_filter_info: true,
-      compact_view: false,
-      icon_animation: true,
-      ...config,
-    };
+    this._config = config;
   }
 
   getCardSize(): number {
@@ -166,19 +156,19 @@ export class AirPurifierCard extends LitElement {
       <ha-card>
         <div class="container">
           ${this._renderHeader(entity, active, name, lang)}
-          ${!compact && this._config.show_stats
+          ${!compact && this._config.show_stats !== false
             ? renderStatsRow(this.hass, resolved, lang)
             : nothing}
-          ${this._config.show_toolbar
+          ${this._config.show_toolbar !== false
             ? renderPresetControl(this.hass, this._config.entity, presets, activePreset, active)
             : nothing}
           ${active && isFavorite
             ? renderFavoriteControl(this.hass, resolved.favoriteLevel)
             : nothing}
-          ${!compact && this._config.show_filter_info
+          ${!compact && this._config.show_filter_info !== false
             ? renderFilterBar(this.hass, resolved.filterLife, resolved.filterUsedTime, lang)
             : nothing}
-          ${!compact && this._config.show_settings
+          ${!compact && this._config.show_settings !== false
             ? renderSettingsRow(this.hass, resolved.childLock, resolved.led, resolved.buzzer, lang)
             : nothing}
         </div>

@@ -23,7 +23,7 @@ export function renderPowerControl(
     <hac-shape-icon
       icon="mdi:lightbulb"
       ?active=${active}
-      ?animated=${animated}
+      .animated=${animated}
       animation="pulse"
       style=${style}
       @click=${handleClick}

@@ -64,16 +64,7 @@ export class PlugCard extends LitElement {
     if (!config.entity) {
       throw new Error('Entity is required');
     }
-    this._config = {
-      show_name: true,
-      show_state: true,
-      show_stats: true,
-      show_power_on_behavior: true,
-      show_settings: true,
-      compact_view: false,
-      icon_animation: true,
-      ...config,
-    };
+    this._config = config;
   }
 
   getCardSize(): number {
@@ -160,13 +151,13 @@ export class PlugCard extends LitElement {
       <ha-card>
         <div class="container">
           ${this._renderHeader(entity, active, name, lang, resolved)}
-          ${!compact && this._config.show_stats
+          ${!compact && this._config.show_stats !== false
             ? renderStatsRow(this.hass, resolved, lang)
             : nothing}
-          ${!compact && this._config.show_power_on_behavior
+          ${!compact && this._config.show_power_on_behavior !== false
             ? renderPowerOnBehavior(this.hass, resolved.powerOnBehavior, powerOnOptions, activeBehavior, lang)
             : nothing}
-          ${!compact && this._config.show_settings
+          ${!compact && this._config.show_settings !== false
             ? renderSettingsRow(this.hass, resolved.childLock, lang)
             : nothing}
         </div>

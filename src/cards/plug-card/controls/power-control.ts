@@ -13,7 +13,7 @@ export function renderPowerControl(
     <hac-shape-icon
       icon="mdi:power-plug"
       ?active=${active}
-      ?animated=${animated}
+      .animated=${animated}
       @click=${handleClick}
     ></hac-shape-icon>
   `;

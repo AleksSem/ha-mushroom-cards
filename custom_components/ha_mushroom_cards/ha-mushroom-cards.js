@@ -824,7 +824,7 @@ function t(t,e,i,s){var o,r=arguments.length,n=r<3?e:null===s?s=Object.getOwnPro
     .overrides-toggle ha-icon {
       --mdc-icon-size: 20px;
     }
-  `],t([pt({attribute:!1})],te.prototype,"hass",void 0),t([ut()],te.prototype,"_config",void 0),t([ut()],te.prototype,"_expandedOverrides",void 0),te=t([lt(yt)],te),At({type:gt,name:"Air Purifier Card",description:"Custom card for Xiaomi Air Purifier"});let ee=class extends at{constructor(){super(...arguments),this._timerDialogOpen=!1,this._schedules=[],this._schedulerConnected=!1}static getConfigElement(){return document.createElement(yt)}static getStubConfig(t){const e=Object.keys(t.states).filter(e=>e.startsWith("fan.")&&t.states[e].attributes.preset_modes);return{entity:e[0]||""}}setConfig(t){if(!t.entity)throw new Error("Entity is required");this._config={show_name:!0,show_state:!0,show_toolbar:!0,show_stats:!0,show_settings:!0,show_filter_info:!0,compact_view:!1,icon_animation:!0,...t}}getCardSize(){return this._config?.compact_view?2:4}disconnectedCallback(){super.disconnectedCallback(),this._schedulerUnsub?.()}shouldUpdate(t){if(t.has("_config")||t.has("_timerDialogOpen")||t.has("_schedules"))return!0;if(!t.has("hass"))return!0;const e=t.get("hass");if(!e)return!0;const i=this._config.entity;if(e.states[i]!==this.hass.states[i])return!0;const s=this._getResolved();for(const t of Object.values(s))if(t&&e.states[t]!==this.hass.states[t])return!0;return!1}updated(t){t.has("hass")&&this.hass&&!this._schedulerConnected&&this._config?.show_timer&&(this._schedulerConnected=!0,this._schedulerUnsub=Tt.subscribe(()=>{this._schedules=Tt.getSchedulesForEntity(this._config?.entity)}),Tt.connect(this.hass),this._schedules=Tt.getSchedulesForEntity(this._config.entity))}_getResolved(){return this._resolved&&this._lastEntity===this._config.entity||(this._lastEntity=this._config.entity,this._resolved=kt(this.hass,this._config)),this._resolved}get _lang(){return this.hass?.language||"en"}render(){if(!this.hass||!this._config)return V;const t=this.hass.states[this._config.entity];if(!t)return q`
+  `],t([pt({attribute:!1})],te.prototype,"hass",void 0),t([ut()],te.prototype,"_config",void 0),t([ut()],te.prototype,"_expandedOverrides",void 0),te=t([lt(yt)],te),At({type:gt,name:"Air Purifier Card",description:"Custom card for Xiaomi Air Purifier"});let ee=class extends at{constructor(){super(...arguments),this._timerDialogOpen=!1,this._schedules=[],this._schedulerConnected=!1}static getConfigElement(){return document.createElement(yt)}static getStubConfig(t){const e=Object.keys(t.states).filter(e=>e.startsWith("fan.")&&t.states[e].attributes.preset_modes);return{entity:e[0]||""}}setConfig(t){if(!t.entity)throw new Error("Entity is required");this._config=t}getCardSize(){return this._config?.compact_view?2:4}disconnectedCallback(){super.disconnectedCallback(),this._schedulerUnsub?.()}shouldUpdate(t){if(t.has("_config")||t.has("_timerDialogOpen")||t.has("_schedules"))return!0;if(!t.has("hass"))return!0;const e=t.get("hass");if(!e)return!0;const i=this._config.entity;if(e.states[i]!==this.hass.states[i])return!0;const s=this._getResolved();for(const t of Object.values(s))if(t&&e.states[t]!==this.hass.states[t])return!0;return!1}updated(t){t.has("hass")&&this.hass&&!this._schedulerConnected&&this._config?.show_timer&&(this._schedulerConnected=!0,this._schedulerUnsub=Tt.subscribe(()=>{this._schedules=Tt.getSchedulesForEntity(this._config?.entity)}),Tt.connect(this.hass),this._schedules=Tt.getSchedulesForEntity(this._config.entity))}_getResolved(){return this._resolved&&this._lastEntity===this._config.entity||(this._lastEntity=this._config.entity,this._resolved=kt(this.hass,this._config)),this._resolved}get _lang(){return this.hass?.language||"en"}render(){if(!this.hass||!this._config)return V;const t=this.hass.states[this._config.entity];if(!t)return q`
         <ha-card>
           <div class="not-found">Entity not found: ${this._config.entity}</div>
         </ha-card>
@@ -832,7 +832,7 @@ function t(t,e,i,s){var o,r=arguments.length,n=r<3?e:null===s?s=Object.getOwnPro
       <ha-card>
         <div class="container">
           ${this._renderHeader(t,i,s,a)}
-          ${!c&&this._config.show_stats?function(t,e,i){const s=[{key:"pm25",entityId:e.pm25,labelKey:"stats.pm25",icon:"mdi:blur"},{key:"temperature",entityId:e.temperature,labelKey:"stats.temperature",icon:"mdi:thermometer"},{key:"humidity",entityId:e.humidity,labelKey:"stats.humidity",icon:"mdi:water-percent"},{key:"motorSpeed",entityId:e.motorSpeed,labelKey:"stats.motor_speed",icon:"mdi:fan"}].filter(e=>!!e.entityId&&void 0!==St(t,e.entityId));return 0===s.length?V:q`
+          ${c||!1===this._config.show_stats?V:function(t,e,i){const s=[{key:"pm25",entityId:e.pm25,labelKey:"stats.pm25",icon:"mdi:blur"},{key:"temperature",entityId:e.temperature,labelKey:"stats.temperature",icon:"mdi:thermometer"},{key:"humidity",entityId:e.humidity,labelKey:"stats.humidity",icon:"mdi:water-percent"},{key:"motorSpeed",entityId:e.motorSpeed,labelKey:"stats.motor_speed",icon:"mdi:fan"}].filter(e=>!!e.entityId&&void 0!==St(t,e.entityId));return 0===s.length?V:q`
     <div class="stats-grid">
       ${s.map(e=>{const s=St(t,e.entityId),o=function(t,e){if(!e)return"";const i=t.states[e];return i?.attributes.unit_of_measurement||""}(t,e.entityId),r="pm25"===e.key&&void 0!==s,n=r?`background: ${a=s,a<=12?"var(--green-color, #4caf50)":a<=35?"var(--light-green-color, #8bc34a)":a<=55?"var(--yellow-color, #ffeb3b)":a<=150?"var(--orange-color, #ff9800)":a<=250?"var(--deep-orange-color, #ff5722)":"var(--red-color, #f44336)"}; color: #fff;`:"";var a;return q`
           <div class="stat-item" style=${n}>
@@ -844,10 +844,10 @@ function t(t,e,i,s){var o,r=arguments.length,n=r<3?e:null===s?s=Object.getOwnPro
           </div>
         `})}
     </div>
-  `}(this.hass,e,a):V}
-          ${this._config.show_toolbar?Mt(this.hass,this._config.entity,o,r,i):V}
+  `}(this.hass,e,a)}
+          ${!1!==this._config.show_toolbar?Mt(this.hass,this._config.entity,o,r,i):V}
           ${i&&n?Pt(this.hass,e.favoriteLevel):V}
-          ${!c&&this._config.show_filter_info?function(t,e,i,s){const o=St(t,e),r=St(t,i);if(void 0===o&&void 0===r)return V;const n=o??0,a=(c=n)>50?"var(--green-color, #4caf50)":c>20?"var(--orange-color, #ff9800)":"var(--red-color, #f44336)";var c;return q`
+          ${c||!1===this._config.show_filter_info?V:function(t,e,i,s){const o=St(t,e),r=St(t,i);if(void 0===o&&void 0===r)return V;const n=o??0,a=(c=n)>50?"var(--green-color, #4caf50)":c>20?"var(--orange-color, #ff9800)":"var(--red-color, #f44336)";var c;return q`
     <div class="filter-section">
       <div class="filter-header">
         <span>${mt("filter.life",s)}</span>
@@ -858,8 +858,8 @@ function t(t,e,i,s){var o,r=arguments.length,n=r<3?e:null===s?s=Object.getOwnPro
       </div>
       ${void 0!==o?q`<hac-progress-bar .value=${n} .color=${a}></hac-progress-bar>`:V}
     </div>
-  `}(this.hass,e.filterLife,e.filterUsedTime,a):V}
-          ${!c&&this._config.show_settings?function(t,e,i,s,o){const r=[{entityId:e,icon:"mdi:lock",labelKey:"settings.child_lock"},{entityId:i,icon:"mdi:lightbulb-outline",labelKey:"settings.led"},{entityId:s,icon:"mdi:volume-high",labelKey:"settings.buzzer"}].filter(e=>e.entityId&&t.states[e.entityId]);return 0===r.length?V:q`
+  `}(this.hass,e.filterLife,e.filterUsedTime,a)}
+          ${c||!1===this._config.show_settings?V:function(t,e,i,s,o){const r=[{entityId:e,icon:"mdi:lock",labelKey:"settings.child_lock"},{entityId:i,icon:"mdi:lightbulb-outline",labelKey:"settings.led"},{entityId:s,icon:"mdi:volume-high",labelKey:"settings.buzzer"}].filter(e=>e.entityId&&t.states[e.entityId]);return 0===r.length?V:q`
     <div class="settings-row">
       ${r.map(e=>q`
         <hac-toggle-button
@@ -870,7 +870,7 @@ function t(t,e,i,s){var o,r=arguments.length,n=r<3?e:null===s?s=Object.getOwnPro
         ></hac-toggle-button>
       `)}
     </div>
-  `}(this.hass,e.childLock,e.led,e.buzzer,a):V}
+  `}(this.hass,e.childLock,e.led,e.buzzer,a)}
         </div>
         ${this._config.show_timer?Rt(this.hass,this._config.entity,s,this._timerDialogOpen,this._config.timer_default_action||"turn_off",()=>{this._timerDialogOpen=!1}):V}
       </ha-card>
@@ -880,7 +880,7 @@ function t(t,e,i,s){var o,r=arguments.length,n=r<3?e:null===s?s=Object.getOwnPro
     <hac-shape-icon
       icon="mdi:air-purifier"
       ?active=${i}
-      ?animated=${s}
+      .animated=${s}
       @click=${()=>zt(t,e)}
     ></hac-shape-icon>
   `}(this.hass,this._config.entity,e,!1!==this._config.icon_animation)}
@@ -924,7 +924,7 @@ function t(t,e,i,s){var o,r=arguments.length,n=r<3?e:null===s?s=Object.getOwnPro
     <hac-shape-icon
       icon="mdi:lightbulb"
       ?active=${s}
-      ?animated=${o}
+      .animated=${o}
       animation="pulse"
       style=${n?`--hac-shape-active-bg: ${n}`:""}
       @click=${()=>zt(t,e)}
@@ -1019,7 +1019,7 @@ function t(t,e,i,s){var o,r=arguments.length,n=r<3?e:null===s?s=Object.getOwnPro
         .computeLabel=${this._computeLabel}
         @value-changed=${this._valueChanged}
       ></ha-form>
-    `}};_e.styles=Jt,t([pt({attribute:!1})],_e.prototype,"hass",void 0),t([ut()],_e.prototype,"_config",void 0),_e=t([lt(se)],_e),At({type:ie,name:"Light Card",description:"Custom card for light entities with brightness and color controls"});let me=class extends at{constructor(){super(...arguments),this._timerDialogOpen=!1,this._schedules=[],this._schedulerConnected=!1}disconnectedCallback(){super.disconnectedCallback(),this._schedulerUnsub?.()}static getConfigElement(){return document.createElement(se)}static getStubConfig(t){const e=Object.keys(t.states).filter(t=>t.startsWith("light."));return{entity:e[0]||""}}setConfig(t){if(!t.entity)throw new Error("Entity is required");this._config={show_name:!0,show_state:!0,show_brightness_control:!0,show_color_temp_control:!0,show_color_control:!0,use_light_color:!0,icon_animation:!0,compact_view:!1,hide_controls_when_off:!0,...t}}getCardSize(){return this._config?.compact_view?1:3}shouldUpdate(t){if(t.has("_config")||t.has("_timerDialogOpen")||t.has("_schedules"))return!0;if(!t.has("hass"))return!0;const e=t.get("hass");if(!e)return!0;const i=this._config.entity;return e.states[i]!==this.hass.states[i]}updated(t){t.has("hass")&&this.hass&&!this._schedulerConnected&&this._config?.show_timer&&(this._schedulerConnected=!0,this._schedulerUnsub=Tt.subscribe(()=>{this._schedules=Tt.getSchedulesForEntity(this._config?.entity)}),Tt.connect(this.hass),this._schedules=Tt.getSchedulesForEntity(this._config.entity))}get _lang(){return this.hass?.language||"en"}render(){if(!this.hass||!this._config)return V;const t=this.hass.states[this._config.entity];if(!t)return q`
+    `}};_e.styles=Jt,t([pt({attribute:!1})],_e.prototype,"hass",void 0),t([ut()],_e.prototype,"_config",void 0),_e=t([lt(se)],_e),At({type:ie,name:"Light Card",description:"Custom card for light entities with brightness and color controls"});let me=class extends at{constructor(){super(...arguments),this._timerDialogOpen=!1,this._schedules=[],this._schedulerConnected=!1}disconnectedCallback(){super.disconnectedCallback(),this._schedulerUnsub?.()}static getConfigElement(){return document.createElement(se)}static getStubConfig(t){const e=Object.keys(t.states).filter(t=>t.startsWith("light."));return{entity:e[0]||""}}setConfig(t){if(!t.entity)throw new Error("Entity is required");this._config=t}getCardSize(){return this._config?.compact_view?1:3}shouldUpdate(t){if(t.has("_config")||t.has("_timerDialogOpen")||t.has("_schedules"))return!0;if(!t.has("hass"))return!0;const e=t.get("hass");if(!e)return!0;const i=this._config.entity;return e.states[i]!==this.hass.states[i]}updated(t){t.has("hass")&&this.hass&&!this._schedulerConnected&&this._config?.show_timer&&(this._schedulerConnected=!0,this._schedulerUnsub=Tt.subscribe(()=>{this._schedules=Tt.getSchedulesForEntity(this._config?.entity)}),Tt.connect(this.hass),this._schedules=Tt.getSchedulesForEntity(this._config.entity))}get _lang(){return this.hass?.language||"en"}render(){if(!this.hass||!this._config)return V;const t=this.hass.states[this._config.entity];if(!t)return q`
         <ha-card>
           <div class="not-found">Entity not found: ${this._config.entity}</div>
         </ha-card>
@@ -1204,7 +1204,7 @@ function t(t,e,i,s){var o,r=arguments.length,n=r<3?e:null===s?s=Object.getOwnPro
     .overrides-toggle ha-icon {
       --mdc-icon-size: 20px;
     }
-  `],t([pt({attribute:!1})],we.prototype,"hass",void 0),t([ut()],we.prototype,"_config",void 0),t([ut()],we.prototype,"_expandedOverrides",void 0),we=t([lt(ge)],we),At({type:fe,name:"Plug Card",description:"Custom card for smart plug/socket entities"});let ke=class extends at{constructor(){super(...arguments),this._timerDialogOpen=!1,this._schedules=[],this._schedulerConnected=!1}static getConfigElement(){return document.createElement(ge)}static getStubConfig(t){const e=Object.keys(t.states).filter(t=>t.startsWith("switch."));return{entity:e[0]||""}}setConfig(t){if(!t.entity)throw new Error("Entity is required");this._config={show_name:!0,show_state:!0,show_stats:!0,show_power_on_behavior:!0,show_settings:!0,compact_view:!1,icon_animation:!0,...t}}getCardSize(){return this._config?.compact_view?2:4}disconnectedCallback(){super.disconnectedCallback(),this._schedulerUnsub?.()}shouldUpdate(t){if(t.has("_config")||t.has("_timerDialogOpen")||t.has("_schedules"))return!0;if(!t.has("hass"))return!0;const e=t.get("hass");if(!e)return!0;const i=this._config.entity;if(e.states[i]!==this.hass.states[i])return!0;const s=this._getResolved();for(const t of Object.values(s))if(t&&e.states[t]!==this.hass.states[t])return!0;return!1}updated(t){t.has("hass")&&this.hass&&!this._schedulerConnected&&this._config?.show_timer&&(this._schedulerConnected=!0,this._schedulerUnsub=Tt.subscribe(()=>{this._schedules=Tt.getSchedulesForEntity(this._config?.entity)}),Tt.connect(this.hass),this._schedules=Tt.getSchedulesForEntity(this._config.entity))}_getResolved(){return this._resolved&&this._lastEntity===this._config.entity||(this._lastEntity=this._config.entity,this._resolved=function(t,e){const i=xt(e.entity);return{power:e.power_entity||wt(t,i,["sensor.{prefix}_power","sensor.{prefix}_electric_power"]),dailyConsumption:e.daily_consumption_entity||wt(t,i,["sensor.{prefix}_daily_consumption","sensor.{prefix}_daily_energy"]),monthlyConsumption:e.monthly_consumption_entity||wt(t,i,["sensor.{prefix}_monthly_consumption","sensor.{prefix}_monthly_energy"]),yearlyConsumption:e.yearly_consumption_entity||wt(t,i,["sensor.{prefix}_yearly_consumption","sensor.{prefix}_yearly_energy"]),childLock:e.child_lock_entity||wt(t,i,["switch.{prefix}_physical_control_locked","switch.{prefix}_child_lock"]),powerOnBehavior:e.power_on_behavior_entity||wt(t,i,["select.{prefix}_power_on_behavior","select.{prefix}_power_on_state"])}}(this.hass,this._config)),this._resolved}get _lang(){return this.hass?.language||"en"}render(){if(!this.hass||!this._config)return V;const t=this.hass.states[this._config.entity];if(!t)return q`
+  `],t([pt({attribute:!1})],we.prototype,"hass",void 0),t([ut()],we.prototype,"_config",void 0),t([ut()],we.prototype,"_expandedOverrides",void 0),we=t([lt(ge)],we),At({type:fe,name:"Plug Card",description:"Custom card for smart plug/socket entities"});let ke=class extends at{constructor(){super(...arguments),this._timerDialogOpen=!1,this._schedules=[],this._schedulerConnected=!1}static getConfigElement(){return document.createElement(ge)}static getStubConfig(t){const e=Object.keys(t.states).filter(t=>t.startsWith("switch."));return{entity:e[0]||""}}setConfig(t){if(!t.entity)throw new Error("Entity is required");this._config=t}getCardSize(){return this._config?.compact_view?2:4}disconnectedCallback(){super.disconnectedCallback(),this._schedulerUnsub?.()}shouldUpdate(t){if(t.has("_config")||t.has("_timerDialogOpen")||t.has("_schedules"))return!0;if(!t.has("hass"))return!0;const e=t.get("hass");if(!e)return!0;const i=this._config.entity;if(e.states[i]!==this.hass.states[i])return!0;const s=this._getResolved();for(const t of Object.values(s))if(t&&e.states[t]!==this.hass.states[t])return!0;return!1}updated(t){t.has("hass")&&this.hass&&!this._schedulerConnected&&this._config?.show_timer&&(this._schedulerConnected=!0,this._schedulerUnsub=Tt.subscribe(()=>{this._schedules=Tt.getSchedulesForEntity(this._config?.entity)}),Tt.connect(this.hass),this._schedules=Tt.getSchedulesForEntity(this._config.entity))}_getResolved(){return this._resolved&&this._lastEntity===this._config.entity||(this._lastEntity=this._config.entity,this._resolved=function(t,e){const i=xt(e.entity);return{power:e.power_entity||wt(t,i,["sensor.{prefix}_power","sensor.{prefix}_electric_power"]),dailyConsumption:e.daily_consumption_entity||wt(t,i,["sensor.{prefix}_daily_consumption","sensor.{prefix}_daily_energy"]),monthlyConsumption:e.monthly_consumption_entity||wt(t,i,["sensor.{prefix}_monthly_consumption","sensor.{prefix}_monthly_energy"]),yearlyConsumption:e.yearly_consumption_entity||wt(t,i,["sensor.{prefix}_yearly_consumption","sensor.{prefix}_yearly_energy"]),childLock:e.child_lock_entity||wt(t,i,["switch.{prefix}_physical_control_locked","switch.{prefix}_child_lock"]),powerOnBehavior:e.power_on_behavior_entity||wt(t,i,["select.{prefix}_power_on_behavior","select.{prefix}_power_on_state"])}}(this.hass,this._config)),this._resolved}get _lang(){return this.hass?.language||"en"}render(){if(!this.hass||!this._config)return V;const t=this.hass.states[this._config.entity];if(!t)return q`
         <ha-card>
           <div class="not-found">Entity not found: ${this._config.entity}</div>
         </ha-card>
@@ -1212,7 +1212,7 @@ function t(t,e,i,s){var o,r=arguments.length,n=r<3?e:null===s?s=Object.getOwnPro
       <ha-card>
         <div class="container">
           ${this._renderHeader(t,i,s,o,e)}
-          ${!r&&this._config.show_stats?function(t,e,i){const s=[{entityId:e.power,labelKey:"stats.power"},{entityId:e.dailyConsumption,labelKey:"stats.daily",decimals:2},{entityId:e.monthlyConsumption,labelKey:"stats.monthly",decimals:2}].filter(e=>!!e.entityId&&void 0!==ve(t,e.entityId));return 0===s.length?V:q`
+          ${r||!1===this._config.show_stats?V:function(t,e,i){const s=[{entityId:e.power,labelKey:"stats.power"},{entityId:e.dailyConsumption,labelKey:"stats.daily",decimals:2},{entityId:e.monthlyConsumption,labelKey:"stats.monthly",decimals:2}].filter(e=>!!e.entityId&&void 0!==ve(t,e.entityId));return 0===s.length?V:q`
     <div class="stats-grid">
       ${s.map(e=>{const s=ve(t,e.entityId),o=function(t,e){if(!e)return"";const i=t.states[e];return i?.attributes.unit_of_measurement||""}(t,e.entityId),r=void 0!==s?void 0!==e.decimals?s.toFixed(e.decimals):Math.round(s).toString():"—";return q`
           <div class="stat-item">
@@ -1224,9 +1224,9 @@ function t(t,e,i,s){var o,r=arguments.length,n=r<3?e:null===s?s=Object.getOwnPro
           </div>
         `})}
     </div>
-  `}(this.hass,e,o):V}
-          ${!r&&this._config.show_power_on_behavior?be(this.hass,e.powerOnBehavior,n,a,o):V}
-          ${!r&&this._config.show_settings?function(t,e,i){if(!e||!t.states[e])return V;const s="on"===t.states[e]?.state;return q`
+  `}(this.hass,e,o)}
+          ${r||!1===this._config.show_power_on_behavior?V:be(this.hass,e.powerOnBehavior,n,a,o)}
+          ${r||!1===this._config.show_settings?V:function(t,e,i){if(!e||!t.states[e])return V;const s="on"===t.states[e]?.state;return q`
     <div class="settings-row">
       <hac-toggle-button
         .icon=${"mdi:lock"}
@@ -1235,7 +1235,7 @@ function t(t,e,i,s){var o,r=arguments.length,n=r<3?e:null===s?s=Object.getOwnPro
         @toggle=${()=>zt(t,e)}
       ></hac-toggle-button>
     </div>
-  `}(this.hass,e.childLock,o):V}
+  `}(this.hass,e.childLock,o)}
         </div>
         ${this._config.show_timer?Rt(this.hass,this._config.entity,s,this._timerDialogOpen,this._config.timer_default_action||"turn_off",()=>{this._timerDialogOpen=!1}):V}
       </ha-card>
@@ -1245,7 +1245,7 @@ function t(t,e,i,s){var o,r=arguments.length,n=r<3?e:null===s?s=Object.getOwnPro
     <hac-shape-icon
       icon="mdi:power-plug"
       ?active=${i}
-      ?animated=${s}
+      .animated=${s}
       @click=${()=>zt(t,e)}
     ></hac-shape-icon>
   `}(this.hass,this._config.entity,e,!1!==this._config.icon_animation)}
