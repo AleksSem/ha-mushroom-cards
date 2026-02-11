@@ -8,6 +8,7 @@ export interface HassEntity {
 
 export interface HomeAssistant {
   states: Record<string, HassEntity>;
+  entities?: Record<string, { entity_id: string; device_id?: string; [key: string]: any }>;
   callService(
     domain: string,
     service: string,

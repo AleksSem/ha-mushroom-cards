@@ -1,5 +1,5 @@
 import { HomeAssistant, HassEntity } from '../../types';
-import { discoverEntities, DiscoveredEntities } from '../../utils/entity';
+import { getDeviceEntities, findDeviceEntity } from '../../utils/entity';
 import { AirPurifierCardConfig } from './types';
 
 export interface ResolvedEntities {
@@ -16,18 +16,20 @@ export interface ResolvedEntities {
 }
 
 export function resolveEntities(hass: HomeAssistant, config: AirPurifierCardConfig): ResolvedEntities {
-  const discovered = discoverEntities(hass, config.entity);
+  const deviceEntities = getDeviceEntities(hass, config.entity);
   return {
-    pm25: config.pm25_entity || discovered.pm25,
-    temperature: config.temperature_entity || discovered.temperature,
-    humidity: config.humidity_entity || discovered.humidity,
-    motorSpeed: config.motor_speed_entity || discovered.motorSpeed,
-    filterLife: config.filter_life_entity || discovered.filterLife,
-    filterUsedTime: config.filter_used_time_entity || discovered.filterUsedTime,
-    favoriteLevel: config.favorite_level_entity || discovered.favoriteLevel,
-    childLock: config.child_lock_entity || discovered.childLock,
-    led: config.led_entity || discovered.led,
-    buzzer: config.buzzer_entity || discovered.buzzer,
+    pm25: config.pm25_entity || findDeviceEntity(hass, deviceEntities, 'sensor', { deviceClass: 'pm25' }),
+    temperature: config.temperature_entity || findDeviceEntity(hass, deviceEntities, 'sensor', { deviceClass: 'temperature' }),
+    humidity: config.humidity_entity || findDeviceEntity(hass, deviceEntities, 'sensor', { deviceClass: 'humidity' }),
+    motorSpeed: config.motor_speed_entity || findDeviceEntity(hass, deviceEntities, 'sensor', { keywords: ['motor_speed'] }),
+    filterLife: config.filter_life_entity || findDeviceEntity(hass, deviceEntities, 'sensor', { keywords: ['filter_life_level', 'filter_life'] }),
+    filterUsedTime: config.filter_used_time_entity || findDeviceEntity(hass, deviceEntities, 'sensor', { keywords: ['filter_used_time'] }),
+    favoriteLevel: config.favorite_level_entity || findDeviceEntity(hass, deviceEntities, 'number', { keywords: ['favorite'] }),
+    childLock: config.child_lock_entity || findDeviceEntity(hass, deviceEntities, 'switch', { keywords: ['child_lock', 'physical_control_locked'] }),
+    led: config.led_entity
+      || findDeviceEntity(hass, deviceEntities, 'light', { keywords: ['indicator'] })
+      || findDeviceEntity(hass, deviceEntities, 'switch', { keywords: ['led'] }),
+    buzzer: config.buzzer_entity || findDeviceEntity(hass, deviceEntities, 'switch', { keywords: ['alarm', 'buzzer'] }),
   };
 }
 

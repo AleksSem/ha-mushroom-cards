@@ -1,5 +1,5 @@
 import { HomeAssistant, HassEntity } from '../../types';
-import { extractPrefix, findEntity } from '../../utils/entity';
+import { getDeviceEntities, findDeviceEntity } from '../../utils/entity';
 import { PlugCardConfig } from './types';
 
 export interface ResolvedEntities {
@@ -12,32 +12,14 @@ export interface ResolvedEntities {
 }
 
 export function resolveEntities(hass: HomeAssistant, config: PlugCardConfig): ResolvedEntities {
-  const prefix = extractPrefix(config.entity);
+  const deviceEntities = getDeviceEntities(hass, config.entity);
   return {
-    power: config.power_entity || findEntity(hass, prefix, [
-      'sensor.{prefix}_power',
-      'sensor.{prefix}_electric_power',
-    ]),
-    dailyConsumption: config.daily_consumption_entity || findEntity(hass, prefix, [
-      'sensor.{prefix}_daily_consumption',
-      'sensor.{prefix}_daily_energy',
-    ]),
-    monthlyConsumption: config.monthly_consumption_entity || findEntity(hass, prefix, [
-      'sensor.{prefix}_monthly_consumption',
-      'sensor.{prefix}_monthly_energy',
-    ]),
-    yearlyConsumption: config.yearly_consumption_entity || findEntity(hass, prefix, [
-      'sensor.{prefix}_yearly_consumption',
-      'sensor.{prefix}_yearly_energy',
-    ]),
-    childLock: config.child_lock_entity || findEntity(hass, prefix, [
-      'switch.{prefix}_physical_control_locked',
-      'switch.{prefix}_child_lock',
-    ]),
-    powerOnBehavior: config.power_on_behavior_entity || findEntity(hass, prefix, [
-      'select.{prefix}_power_on_behavior',
-      'select.{prefix}_power_on_state',
-    ]),
+    power: config.power_entity || findDeviceEntity(hass, deviceEntities, 'sensor', { deviceClass: 'power' }),
+    dailyConsumption: config.daily_consumption_entity || findDeviceEntity(hass, deviceEntities, 'sensor', { keywords: ['daily'] }),
+    monthlyConsumption: config.monthly_consumption_entity || findDeviceEntity(hass, deviceEntities, 'sensor', { keywords: ['monthly'] }),
+    yearlyConsumption: config.yearly_consumption_entity || findDeviceEntity(hass, deviceEntities, 'sensor', { keywords: ['yearly'] }),
+    childLock: config.child_lock_entity || findDeviceEntity(hass, deviceEntities, 'switch', { keywords: ['child_lock', 'physical_control_locked'] }),
+    powerOnBehavior: config.power_on_behavior_entity || findDeviceEntity(hass, deviceEntities, 'select', { keywords: ['power_on'] }),
   };
 }
 

@@ -35,6 +35,20 @@ A card for controlling smart lights with support for:
 - Timer integration (schedule on/off via Python backend scheduler)
 - Multi-language support (English, Russian)
 
+### Plug Card
+
+A card for controlling smart plugs/sockets with support for:
+
+- Power on/off control with animated icon
+- Real-time power consumption (W)
+- Daily, monthly, yearly energy stats
+- Power-on behavior select (restore, off, on)
+- Child lock toggle
+- Compact view mode
+- Timer integration (schedule on/off via Python backend scheduler)
+- Device-based entity auto-discovery with manual override support
+- Multi-language support (English, Russian)
+
 ### Timer Card
 
 A standalone card for scheduling on/off timers for any entity:
@@ -134,6 +148,51 @@ show_timer: false
 | `show_timer` | boolean | `false` | Show timer button for scheduling on/off |
 | `timer_default_action` | string | `turn_off` | Default timer action (turn_off, turn_on, toggle) |
 
+### Plug Card
+
+```yaml
+type: custom:plug-card
+entity: switch.smart_plug
+name: Smart Plug
+show_name: true
+show_state: true
+show_stats: true
+show_power_on_behavior: true
+show_settings: true
+icon_animation: true
+compact_view: false
+show_timer: false
+```
+
+#### Options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `entity` | string | **Required** | Smart plug `switch` entity ID |
+| `name` | string | Entity name | Card title |
+| `show_name` | boolean | `true` | Show card name |
+| `show_state` | boolean | `true` | Show current state |
+| `show_stats` | boolean | `true` | Show power consumption and energy stats |
+| `show_power_on_behavior` | boolean | `true` | Show power-on behavior select |
+| `show_settings` | boolean | `true` | Show child lock toggle |
+| `icon_animation` | boolean | `true` | Animate icon when active |
+| `compact_view` | boolean | `false` | Compact card layout |
+| `show_timer` | boolean | `false` | Show timer button for scheduling on/off |
+| `timer_default_action` | string | `turn_off` | Default timer action (turn_off, turn_on, toggle) |
+
+#### Entity Overrides
+
+```yaml
+type: custom:plug-card
+entity: switch.smart_plug
+power_entity: sensor.smart_plug_power
+daily_consumption_entity: sensor.smart_plug_energy_daily
+monthly_consumption_entity: sensor.smart_plug_energy_monthly
+yearly_consumption_entity: sensor.smart_plug_energy_yearly
+child_lock_entity: switch.smart_plug_child_lock
+power_on_behavior_entity: select.smart_plug_power_on_behavior
+```
+
 ### Timer Card
 
 ```yaml
@@ -157,7 +216,11 @@ entity: fan.air_purifier
 
 ### Entity Overrides
 
-If your purifier uses non-standard entity naming, you can override sensor entities:
+Both Air Purifier and Plug cards use **device-based auto-discovery** — they look up the device via `hass.entities` device registry and find related entities by domain, device class, and keywords. This works reliably regardless of entity naming conventions.
+
+If auto-discovery doesn't find the right entity, you can override any sensor manually:
+
+#### Air Purifier Card
 
 ```yaml
 type: custom:air-purifier-card
@@ -172,6 +235,19 @@ favorite_level_entity: number.air_purifier_favorite_level
 child_lock_entity: switch.air_purifier_child_lock
 led_entity: switch.air_purifier_led
 buzzer_entity: switch.air_purifier_buzzer
+```
+
+#### Plug Card
+
+```yaml
+type: custom:plug-card
+entity: switch.smart_plug
+power_entity: sensor.smart_plug_power
+daily_consumption_entity: sensor.smart_plug_energy_daily
+monthly_consumption_entity: sensor.smart_plug_energy_monthly
+yearly_consumption_entity: sensor.smart_plug_energy_yearly
+child_lock_entity: switch.smart_plug_child_lock
+power_on_behavior_entity: select.smart_plug_power_on_behavior
 ```
 
 ### AQI Color Coding
@@ -214,6 +290,14 @@ src/
 │   │   ├── controls/      # UI controls (power, brightness, color temp, color)
 │   │   ├── light-card.ts
 │   │   ├── light-card-editor.ts
+│   │   ├── const.ts
+│   │   ├── styles.ts
+│   │   ├── types.ts
+│   │   └── utils.ts
+│   ├── plug-card/
+│   │   ├── controls/      # UI controls (power, stats, settings, power-on behavior)
+│   │   ├── plug-card.ts
+│   │   ├── plug-card-editor.ts
 │   │   ├── const.ts
 │   │   ├── styles.ts
 │   │   ├── types.ts
