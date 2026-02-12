@@ -1,5 +1,6 @@
 """HA Mushroom Cards - Custom Lovelace cards for Home Assistant."""
 
+import hashlib
 import logging
 from pathlib import Path
 
@@ -17,8 +18,16 @@ _LOGGER = logging.getLogger(__name__)
 URL_BASE = f"/{DOMAIN}/ha-mushroom-cards.js"
 
 
-async def _cleanup_lovelace_resource(hass: HomeAssistant) -> None:
-    """Remove stale entry from lovelace_resources (legacy cleanup)."""
+def _get_js_version(js_path: Path) -> str:
+    """Get MD5 hash of the JS bundle for cache busting."""
+    try:
+        return hashlib.md5(js_path.read_bytes()).hexdigest()[:8]
+    except Exception:
+        return "0"
+
+
+async def _ensure_lovelace_resource(hass: HomeAssistant, url: str) -> None:
+    """Ensure a persistent Lovelace resource exists for our JS."""
     try:
         lovelace_data = hass.data.get("lovelace")
         if not lovelace_data:
@@ -26,12 +35,20 @@ async def _cleanup_lovelace_resource(hass: HomeAssistant) -> None:
         resources = getattr(lovelace_data, "resources", None)
         if resources is None:
             return
+
         for item in resources.async_items():
             if DOMAIN in item.get("url", ""):
-                await resources.async_delete_item(item["id"])
+                if item["url"] != url:
+                    await resources.async_update_item(
+                        item["id"], {"res_type": "module", "url": url}
+                    )
                 return
+
+        await resources.async_create_item({"res_type": "module", "url": url})
     except Exception:
-        pass
+        _LOGGER.warning(
+            "Failed to register Lovelace resource, falling back to add_extra_js_url"
+        )
 
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
@@ -42,20 +59,21 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
         return True
 
     js_path = Path(__file__).parent / "ha-mushroom-cards.js"
+    version = _get_js_version(js_path)
+    url_with_version = f"{URL_BASE}?v={version}"
 
-    # Static file serving (replaces HacJsView)
     await hass.http.async_register_static_paths(
         [StaticPathConfig(URL_BASE, str(js_path), cache_headers=False)]
     )
 
-    # In-memory only — URL appears in HTML only after this runs. No persistence = no race.
-    add_extra_js_url(hass, URL_BASE)
+    # Persistent Lovelace resource — survives restarts, no race condition
+    await _ensure_lovelace_resource(hass, url_with_version)
 
-    # Remove stale lovelace resource from previous version (one-time cleanup)
-    await _cleanup_lovelace_resource(hass)
+    # Fallback: in-memory registration for current session
+    add_extra_js_url(hass, url_with_version)
 
     hass.data[DOMAIN]["frontend_registered"] = True
-    _LOGGER.info("HA Mushroom Cards frontend registered")
+    _LOGGER.info("HA Mushroom Cards frontend registered (v=%s)", version)
     return True
 
 
