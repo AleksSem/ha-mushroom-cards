@@ -1,14 +1,11 @@
 """HA Mushroom Cards - Custom Lovelace cards for Home Assistant."""
 
-import hashlib
 import logging
 from pathlib import Path
 
-from aiohttp import web
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.components.http import HomeAssistantView
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.components.frontend import add_extra_js_url
 
 from .const import DOMAIN
@@ -17,30 +14,24 @@ from .websocket_api import async_register_websocket_api
 
 _LOGGER = logging.getLogger(__name__)
 
+URL_BASE = f"/{DOMAIN}/ha-mushroom-cards.js"
 
-class HacJsView(HomeAssistantView):
-    """Serve ha-mushroom-cards.js with immutable caching (URL has content hash)."""
 
-    requires_auth = False
-    url = f"/{DOMAIN}/ha-mushroom-cards.js"
-    name = "ha_mushroom_cards:frontend"
-
-    def __init__(self, js_path: str, etag: str) -> None:
-        self._etag = etag
-        self._content = Path(js_path).read_bytes()
-
-    async def get(self, request: web.Request) -> web.Response:
-        """Serve JS file from memory with immutable cache headers."""
-        if request.headers.get("If-None-Match") == self._etag:
-            return web.Response(status=304)
-        return web.Response(
-            body=self._content,
-            headers={
-                "Content-Type": "application/javascript; charset=utf-8",
-                "Cache-Control": "public, max-age=31536000, immutable",
-                "ETag": self._etag,
-            },
-        )
+async def _cleanup_lovelace_resource(hass: HomeAssistant) -> None:
+    """Remove stale entry from lovelace_resources (legacy cleanup)."""
+    try:
+        lovelace_data = hass.data.get("lovelace")
+        if not lovelace_data:
+            return
+        resources = getattr(lovelace_data, "resources", None)
+        if resources is None:
+            return
+        for item in resources.async_items():
+            if DOMAIN in item.get("url", ""):
+                await resources.async_delete_item(item["id"])
+                return
+    except Exception:
+        pass
 
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
@@ -50,22 +41,21 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     if hass.data[DOMAIN].get("frontend_registered"):
         return True
 
-    js_path = str(Path(__file__).parent / "ha-mushroom-cards.js")
-    url = f"/{DOMAIN}/ha-mushroom-cards.js"
+    js_path = Path(__file__).parent / "ha-mushroom-cards.js"
 
-    file_hash = ""
-    try:
-        file_hash = hashlib.md5(Path(js_path).read_bytes()).hexdigest()[:8]
-    except OSError:
-        pass
+    # Static file serving (replaces HacJsView)
+    await hass.http.async_register_static_paths(
+        [StaticPathConfig(URL_BASE, str(js_path), cache_headers=False)]
+    )
 
-    hass.http.register_view(HacJsView(js_path, f'"{file_hash}"'))
+    # In-memory only — URL appears in HTML only after this runs. No persistence = no race.
+    add_extra_js_url(hass, URL_BASE)
 
-    cache_param = f"?v={file_hash}" if file_hash else ""
-    add_extra_js_url(hass, f"{url}{cache_param}")
+    # Remove stale lovelace resource from previous version (one-time cleanup)
+    await _cleanup_lovelace_resource(hass)
 
     hass.data[DOMAIN]["frontend_registered"] = True
-    _LOGGER.info("HA Mushroom Cards frontend resource registered")
+    _LOGGER.info("HA Mushroom Cards frontend registered")
     return True
 
 
