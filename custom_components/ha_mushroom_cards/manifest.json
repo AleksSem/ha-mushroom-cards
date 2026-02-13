@@ -1,11 +1,16 @@
 {
   "domain": "ha_mushroom_cards",
   "name": "HA Mushroom Cards",
-  "codeowners": ["@AleksSem"],
+  "codeowners": [
+    "@AleksSem"
+  ],
   "config_flow": true,
-  "dependencies": ["frontend", "http", "lovelace"],
+  "dependencies": [
+    "frontend",
+    "http"
+  ],
   "documentation": "https://github.com/AleksSem/ha-mushroom-cards",
   "issue_tracker": "https://github.com/AleksSem/ha-mushroom-cards/issues",
   "iot_class": "local_push",
-  "version": "1.0.0"
+  "version": "1.0.5"
 }

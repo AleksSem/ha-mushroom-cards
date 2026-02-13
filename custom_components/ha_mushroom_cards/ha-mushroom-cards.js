@@ -1689,4 +1689,4 @@ function t(t,e,i,s){var o,n=arguments.length,r=n<3?e:null===s?s=Object.getOwnPro
                 `)}
             `:q}
       </div>
-    `}};qe.styles=[gt,je],t([ht({attribute:!1})],qe.prototype,"hass",void 0),t([ut()],qe.prototype,"_config",void 0),t([ut()],qe.prototype,"_schedules",void 0),qe=t([pt(Ne)],qe),console.info("%c HA-CARDS %c v1.0.0 ","color: white; background: #555; font-weight: bold; padding: 2px 6px; border-radius: 4px 0 0 4px;","color: white; background: #1976d2; font-weight: bold; padding: 2px 6px; border-radius: 0 4px 4px 0;");
+    `}};qe.styles=[gt,je],t([ht({attribute:!1})],qe.prototype,"hass",void 0),t([ut()],qe.prototype,"_config",void 0),t([ut()],qe.prototype,"_schedules",void 0),qe=t([pt(Ne)],qe),console.info("%c HA-CARDS %c v1.0.5 ","color: white; background: #555; font-weight: bold; padding: 2px 6px; border-radius: 4px 0 0 4px;","color: white; background: #1976d2; font-weight: bold; padding: 2px 6px; border-radius: 0 4px 4px 0;");

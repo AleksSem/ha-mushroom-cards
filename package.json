@@ -1,17 +1,19 @@
 {
   "name": "ha-mushroom-cards",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "Custom Lovelace cards for Home Assistant",
   "main": "custom_components/ha_mushroom_cards/ha-mushroom-cards.js",
   "scripts": {
     "build": "rollup -c",
-    "watch": "rollup -c --watch"
+    "watch": "rollup -c --watch",
+    "prebuild": "node -e \"const fs=require('fs');const v=require('./package.json').version;const p='custom_components/ha_mushroom_cards/manifest.json';const m=JSON.parse(fs.readFileSync(p));m.version=v;fs.writeFileSync(p,JSON.stringify(m,null,2)+'\\n');const l='package-lock.json';const lk=JSON.parse(fs.readFileSync(l));lk.version=v;if(lk.packages&&lk.packages[''])lk.packages[''].version=v;fs.writeFileSync(l,JSON.stringify(lk,null,2)+'\\n')\""
   },
   "dependencies": {
     "lit": "^3.2.0"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-replace": "^6.0.3",
     "@rollup/plugin-terser": "^0.4.4",
     "rollup": "^4.29.0",
     "rollup-plugin-typescript2": "^0.36.0",
