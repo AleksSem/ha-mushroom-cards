@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { safeCustomElement } from '../../utils/safe-custom-element';
 import { HomeAssistant } from '../../types';
 import { PlugCardConfig } from './types';
 import { EDITOR_TAG } from './const';
@@ -38,7 +39,7 @@ const ENTITY_OVERRIDE_SCHEMA = [
   { name: 'power_on_behavior_entity', selector: { entity: { domain: 'select' } } },
 ];
 
-@customElement(EDITOR_TAG)
+@safeCustomElement(EDITOR_TAG)
 export class PlugCardEditor extends LitElement {
   @property({ attribute: false }) hass!: HomeAssistant;
   @state() private _config!: PlugCardConfig;

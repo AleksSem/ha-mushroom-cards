@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { safeCustomElement } from '../../utils/safe-custom-element';
 import { Schedule } from '../../types';
 import { localize } from '../../localize';
 
@@ -8,7 +9,7 @@ const DAY_KEYS = [
   'timer.day_fri', 'timer.day_sat', 'timer.day_sun',
 ];
 
-@customElement('hac-timer-badge')
+@safeCustomElement('hac-timer-badge')
 export class TimerBadge extends LitElement {
   @property({ attribute: false }) schedule!: Schedule;
   @property({ type: Boolean }) compact = false;

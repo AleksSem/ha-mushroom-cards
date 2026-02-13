@@ -1,8 +1,9 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { safeCustomElement } from '../../utils/safe-custom-element';
 import { animationStyles } from '../styles/animations';
 
-@customElement('hac-shape-icon')
+@safeCustomElement('hac-shape-icon')
 export class ShapeIcon extends LitElement {
   @property() icon = 'mdi:air-purifier';
   @property({ type: Boolean }) active = false;

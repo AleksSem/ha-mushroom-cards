@@ -1,7 +1,8 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { safeCustomElement } from '../../utils/safe-custom-element';
 
-@customElement('hac-state-info')
+@safeCustomElement('hac-state-info')
 export class StateInfo extends LitElement {
   @property() primary = '';
   @property() secondary = '';

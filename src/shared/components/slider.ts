@@ -1,7 +1,8 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { safeCustomElement } from '../../utils/safe-custom-element';
 
-@customElement('hac-slider')
+@safeCustomElement('hac-slider')
 export class HacSlider extends LitElement {
   @property({ type: Number }) value = 0;
   @property({ type: Number }) min = 0;

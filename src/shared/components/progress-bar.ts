@@ -1,7 +1,8 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { safeCustomElement } from '../../utils/safe-custom-element';
 
-@customElement('hac-progress-bar')
+@safeCustomElement('hac-progress-bar')
 export class ProgressBar extends LitElement {
   @property({ type: Number }) value = 0;
   @property() color = 'var(--primary-color)';

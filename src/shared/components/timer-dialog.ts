@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { safeCustomElement } from '../../utils/safe-custom-element';
 import { HomeAssistant, Schedule } from '../../types';
 import { localize } from '../../localize';
 import { schedulerManager } from '../../utils/scheduler-api';
@@ -21,7 +22,7 @@ function formatTimeFromISO(isoStr: string): string {
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
 
-@customElement('hac-timer-dialog')
+@safeCustomElement('hac-timer-dialog')
 export class TimerDialog extends LitElement {
   @property({ attribute: false }) hass!: HomeAssistant;
   @property({ attribute: false }) entityId: string | string[] = '';

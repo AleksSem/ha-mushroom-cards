@@ -1,5 +1,6 @@
 import { LitElement, html, nothing, PropertyValues } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { safeCustomElement } from '../../utils/safe-custom-element';
 import { HomeAssistant, HassEntity, Schedule } from '../../types';
 import { localize } from '../../localize';
 import { cardStyles } from '../../shared/styles/card-styles';
@@ -40,7 +41,7 @@ registerCard({
   description: CARD_DESCRIPTION,
 });
 
-@customElement(CARD_TAG)
+@safeCustomElement(CARD_TAG)
 export class LightCard extends LitElement {
   @property({ attribute: false }) hass!: HomeAssistant;
   @state() private _config!: LightCardConfig;

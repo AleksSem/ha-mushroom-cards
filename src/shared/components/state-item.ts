@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { safeCustomElement } from '../../utils/safe-custom-element';
 
-@customElement('hac-state-item')
+@safeCustomElement('hac-state-item')
 export class StateItem extends LitElement {
   render() {
     return html`

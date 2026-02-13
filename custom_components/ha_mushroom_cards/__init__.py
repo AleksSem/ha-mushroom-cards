@@ -26,15 +26,18 @@ def _get_js_version(js_path: Path) -> str:
         return "0"
 
 
-async def _ensure_lovelace_resource(hass: HomeAssistant, url: str) -> None:
-    """Ensure a persistent Lovelace resource exists for our JS."""
+async def _ensure_lovelace_resource(hass: HomeAssistant, url: str) -> bool:
+    """Ensure a persistent Lovelace resource exists for our JS.
+
+    Returns True if the resource was registered successfully.
+    """
     try:
         lovelace_data = hass.data.get("lovelace")
         if not lovelace_data:
-            return
+            return False
         resources = getattr(lovelace_data, "resources", None)
         if resources is None:
-            return
+            return False
 
         for item in resources.async_items():
             if DOMAIN in item.get("url", ""):
@@ -42,13 +45,15 @@ async def _ensure_lovelace_resource(hass: HomeAssistant, url: str) -> None:
                     await resources.async_update_item(
                         item["id"], {"res_type": "module", "url": url}
                     )
-                return
+                return True
 
         await resources.async_create_item({"res_type": "module", "url": url})
+        return True
     except Exception:
         _LOGGER.warning(
             "Failed to register Lovelace resource, falling back to add_extra_js_url"
         )
+        return False
 
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
@@ -63,14 +68,15 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     url_with_version = f"{URL_BASE}?v={version}"
 
     await hass.http.async_register_static_paths(
-        [StaticPathConfig(URL_BASE, str(js_path), cache_headers=False)]
+        [StaticPathConfig(URL_BASE, str(js_path), cache_headers=True)]
     )
 
     # Persistent Lovelace resource — survives restarts, no race condition
-    await _ensure_lovelace_resource(hass, url_with_version)
+    resource_ok = await _ensure_lovelace_resource(hass, url_with_version)
 
-    # Fallback: in-memory registration for current session
-    add_extra_js_url(hass, url_with_version)
+    # Fallback: in-memory registration only if persistent resource failed
+    if not resource_ok:
+        add_extra_js_url(hass, url_with_version)
 
     hass.data[DOMAIN]["frontend_registered"] = True
     _LOGGER.info("HA Mushroom Cards frontend registered (v=%s)", version)

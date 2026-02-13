@@ -1,10 +1,11 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { safeCustomElement } from '../../utils/safe-custom-element';
 import { localize } from '../../localize';
 
 const DEFAULT_PRESETS = [300, 600, 900, 1800, 3600, 7200];
 
-@customElement('hac-timer-picker')
+@safeCustomElement('hac-timer-picker')
 export class TimerPicker extends LitElement {
   @property() lang = 'en';
   @property({ type: Array }) presets: number[] = DEFAULT_PRESETS;

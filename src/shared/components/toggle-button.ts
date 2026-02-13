@@ -1,7 +1,8 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { safeCustomElement } from '../../utils/safe-custom-element';
 
-@customElement('hac-toggle-button')
+@safeCustomElement('hac-toggle-button')
 export class ToggleButton extends LitElement {
   @property() icon = '';
   @property({ type: Boolean }) active = false;

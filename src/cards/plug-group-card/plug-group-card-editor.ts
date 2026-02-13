@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { safeCustomElement } from '../../utils/safe-custom-element';
 import { HomeAssistant } from '../../types';
 import { PlugGroupCardConfig } from './types';
 import { EDITOR_TAG } from './const';
@@ -34,7 +35,7 @@ const MAIN_SCHEMA = [
   },
 ];
 
-@customElement(EDITOR_TAG)
+@safeCustomElement(EDITOR_TAG)
 export class PlugGroupCardEditor extends LitElement {
   @property({ attribute: false }) hass!: HomeAssistant;
   @state() private _config!: PlugGroupCardConfig;
